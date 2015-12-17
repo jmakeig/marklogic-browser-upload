@@ -1,4 +1,5 @@
 'use strict'
+var util = require('util.sjs');
 
 /**
  * Get names and document counts of collections filtered by `filter`.
@@ -8,8 +9,13 @@
  * @return {Array}             `{ name: string, count: number}` pairs
  */
 function getCollections(filter, order, direction) {
+  try {
+    var collRef = cts.collectionReference();
+  } catch(e) {
+    return [];
+  }
   return cts.values(
-    cts.collectionReference(), null, [order || 'frequency-order', direction || 'descending', 'document']
+    collRef, null, [order || 'frequency-order', direction || 'descending', 'document']
   )
     .toArray()
     .filter(function(coll) {
@@ -32,16 +38,20 @@ if('GET' === xdmp.getRequestMethod()) {
       - For each user collection: Name and document count, ordered by count (default) or name, ascending or descending (default)
       - Same for system (batch) collections
   */
+  var id = xdmp.getRequestField('id', xdmp.database().toString());
   var collectionOrderBy = xdmp.getRequestField('collOrder', 'frequency-order');
   var collectionOrderDirection = xdmp.getRequestField('collDir', 'descending');
   var batchOrderBy = xdmp.getRequestField('batchOrder', 'frequency-order');
   var batchOrderDirection = xdmp.getRequestField('batchDir', 'descending');
 
+  var estimate = util.applyAs(cts.estimate, {database: id});
+  var getCollections = util.applyAs(getCollections, {database: id});
+
   var db = {}
-  db.id = xdmp.database();
-  db.name = xdmp.databaseName(xdmp.database());
-  db.documentsCount = cts.estimate(cts.andQuery([]), 'document');
-  db.propertiesCount = cts.estimate(cts.andQuery([]), 'properties');
+  db.id = id;
+  db.name = xdmp.databaseName(id);
+  db.documentsCount = estimate(cts.andQuery([]), 'document');
+  db.propertiesCount = estimate(cts.andQuery([]), 'properties');
   db.collections = getCollections(/^(?!batch-)/, collectionOrderBy, collectionOrderDirection);
   db.batches = getCollections(/^batch-/, batchOrderBy, batchOrderDirection);
 
