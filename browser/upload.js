@@ -58,7 +58,7 @@ function sendFiles(files) {
   }
 
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/upload.sjs');
+  xhr.open('POST', '/marklogic/upload.sjs');
   xhr.onload = function() {
     console.log("Done");
   };
