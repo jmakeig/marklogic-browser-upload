@@ -13,33 +13,37 @@ var collectionBatch = xdmp.getRequestField('collection-batch');
 var collectionsDefault = xdmp.getRequestField('collection-defaults');
 var collections = (xdmp.getRequestField('collections') || []);
 if(collectionBatch) {
-  collections.push('batch-1234');
+  collections.push('batch-' + util.uuid());
 }
-console.log(collectionsDefault);
 if(collectionsDefault) {
   collections = collections.concat(xdmp.defaultCollections().toArray())
 }
-console.log(collections);
 
-function getURI(node, policy, filename) {
+function deriveURI(node, policy, filename) {
+  var basename = filename;
   switch (policy) {
     case 'filename':
-      return filename;
       break;
     case 'id':
+      throw new TypeError('id policy is not yet implemented');
       break;
     case 'uuid':
+      basename = util.uuid() + '.json';
       break;
     default:
       throw new TypeError(policy + ' is not a valid URI policy');
   }
+  return '/' + basename;
 }
 
+function findID(node) {
+  // TODO: Get the id or _id property out of JSON or the corresponding elements out of XML
+}
 
 for(var i = 0; i < files.length; i++) {
   var node = xdmp.unquote(files[i]);
   xdmp.documentInsert(
-    getURI(node, uris, fileNames[i]),
+    deriveURI(node, uris, fileNames[i]),
     node,
     xdmp.defaultPermissions(),
     collections
@@ -47,3 +51,5 @@ for(var i = 0; i < files.length; i++) {
 }
 
 xdmp.setResponseCode(200, 'OK');
+xdmp.addResponseHeader('Content-Type', 'application/json;charset=utf-8');
+collections;
