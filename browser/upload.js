@@ -48,13 +48,13 @@ var fu = Object.create(FileUploader).init();
 
 
 function sendFiles(files) {
-  var data = new FormData();
+  var data = new FormData(document.getElementById('upload'));
 
   var progress = document.getElementById('progress');
 
   // process all File objects
   for (var i = 0, f; f = files[i]; i++) {
-    data.append('file', f);
+    data.append('files', f);
   }
 
   var xhr = new XMLHttpRequest();

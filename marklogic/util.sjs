@@ -33,4 +33,9 @@ function applyAs(fct, options) {
   }
 }
 
+function uuid() {
+  return sem.uuid().toString().split(':')[2];
+}
+
 module.exports.applyAs = applyAs;
+module.exports.uuid = uuid;

@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  <form method="POST" enctype="multipart/form-data">
+  <form id="upload" method="POST" enctype="multipart/form-data">
     <section>
       <h2>Documents</h2>
       <div>114,328 documents</div>
@@ -60,22 +60,22 @@
             <thead><tr><th><h3>Permissions</h3></th><th>R</th><th>U</th><th>I</th><th>E</th></tr></thead>
             <tbody>
               <tr><td>rest-reader</td>
-                <td class="check"><input type="checkbox" name="rest-reader" value="R" checked="checked"/></td>
-                <td class="check"><input type="checkbox" name="rest-reader" value="U"/></td>
-                <td class="check"><input type="checkbox" name="rest-reader" value="I"/></td>
-                <td class="check"><input type="checkbox" name="rest-reader" value="E"/></td>
+                <td class="check"><input type="checkbox" name="permission*rest-reader" value="R" checked="checked"/></td>
+                <td class="check"><input type="checkbox" name="permission*rest-reader" value="U"/></td>
+                <td class="check"><input type="checkbox" name="permission*rest-reader" value="I"/></td>
+                <td class="check"><input type="checkbox" name="permission*rest-reader" value="E"/></td>
               </tr>
               <tr><td>rest-writer</td>
-                <td class="check"><input type="checkbox" name="rest-reader" value="R" checked="checked"/></td>
-                <td class="check"><input type="checkbox" name="rest-reader" value="U" checked="checked"/></td>
-                <td class="check"><input type="checkbox" name="rest-reader" value="I" checked="checked"/></td>
-                <td class="check"><input type="checkbox" name="rest-reader" value="E"/></td>
+                <td class="check"><input type="checkbox" name="permission*rest-reader" value="R" checked="checked"/></td>
+                <td class="check"><input type="checkbox" name="permission*rest-reader" value="U" checked="checked"/></td>
+                <td class="check"><input type="checkbox" name="permission*rest-reader" value="I" checked="checked"/></td>
+                <td class="check"><input type="checkbox" name="permission*rest-reader" value="E"/></td>
               </tr>
             </tbody>
           <table>
           <ul class="select-group">
             <li><button name="permission-add">+ Add</button></li>
-            <li><label><input type="checkbox" name="collection-defaults" value="true" checked="checked"/>Defaults<label></li>
+            <li><label><input type="checkbox" name="permission-defaults" value="true" checked="checked"/>Defaults<label></li>
           </ul>
         </div>
       </div>
