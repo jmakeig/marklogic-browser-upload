@@ -11,7 +11,8 @@ var uris = xdmp.getRequestField('uris', 'filename');
 
 var collectionBatch = xdmp.getRequestField('collection-batch');
 var collectionsDefault = xdmp.getRequestField('collection-defaults');
-var collections = (xdmp.getRequestField('collections') || []);
+var collections = xdmp.getRequestField('collections');
+if('string' === typeof collections) { collections = [collections]; }
 if(collectionBatch) {
   collections.push('batch-' + util.uuid());
 }
