@@ -19,6 +19,51 @@ if(collectionsDefault) {
   collections = collections.concat(xdmp.defaultCollections().toArray())
 }
 
+// console.log(
+//   xdmp.getRequestFieldNames()
+//     .toArray()
+//     .filter(function(f){
+//       console.log(f);
+//       return f.match(/^permission\*/);
+//     })
+//     .map(function(f){
+//       var perm = {};
+//       perm[f.split('\*')[1]] = xdmp.getRequestField(f);
+//       return perm;
+//     })
+//   );
+
+function calculatePermissions(permissions, defaults) {
+  var perms = [];
+  permissions.forEach(function(role){
+    for(r in role) {
+      if(!Array.isArray(role[r])) { role[r] = [role[r]]; }
+      perms = perms.concat(
+        role[r].map(function(cap){
+          console.log(xdmp.permission(r, cap));
+          return xdmp.permission(r, cap);
+        })
+      );
+    }
+  });
+  if(defaults) {
+    perms = perms.concat(xdmp.defaultPermissions());
+  }
+  return perms;
+}
+var permissions = xdmp.getRequestFieldNames()
+  .toArray()
+  .filter(function(f){
+    console.log(f);
+    return f.match(/^permission\*/);
+  })
+  .map(function(f){
+    var perm = {};
+    perm[f.split('\*')[1]] = xdmp.getRequestField(f);
+    return perm;
+  });
+
+
 function deriveURI(node, policy, filename) {
   var basename = filename;
   switch (policy) {
@@ -45,7 +90,7 @@ for(var i = 0; i < files.length; i++) {
   xdmp.documentInsert(
     deriveURI(node, uris, fileNames[i]),
     node,
-    xdmp.defaultPermissions(),
+    calculatePermissions(permissions, xdmp.getRequestField('permission-defaults')),
     collections
   );
 }
