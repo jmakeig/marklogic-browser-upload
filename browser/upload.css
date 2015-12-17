@@ -1,17 +1,71 @@
-#filedrag
-{
+body {
+	padding: 1em;
+	font-family: "Helvetica Neue", Helvetica, sans-serif;
+	line-height: 1.4;
+}
+h1, h2, h3, h4, h5, h6 {
+	line-height: 1.1;
+	margin: 0.5rem 0;
+}
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 0.5em -0.5em;
+}
+th, td {
+	padding: 0.5em;
+	border-bottom: solid 1px #ccc;
+	text-align: left;
+}
+td.check {
+	width: 1em;
+	text-align: center;
+}
+td.button {
+	width: 4em;
+}
+td.number {
+	text-align: right;
+}
+form,
+ul.select-group {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+}
+form > section,
+ul.select-group > li {
+	flex: 1 0 0;
+	padding: 1em;
+}
+
+ul.select-group {
+	padding: 0;
+}
+ul.select-group > li {
+	list-style: none;
+	padding: 0;
+}
+
+label > input {
+	margin-right: 1em;
+}
+
+progress {
+	width: 100%;
+}
+#filedrag {
+	height: 20em;
 	font-weight: bold;
 	text-align: center;
 	padding: 1em 0;
 	margin: 1em 0;
-	color: #555;
-	border: 2px dashed #555;
+	border: 1px dashed;
 	border-radius: 7px;
 	cursor: default;
 }
 
-#filedrag.hover
-{
+#filedrag.hover {
 	color: #f00;
 	border-color: #f00;
 	border-style: solid;
