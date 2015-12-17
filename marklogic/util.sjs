@@ -16,6 +16,7 @@
  *                    `applyAs(f)(1, 2)`
  */
 function applyAs(fct, options) {
+  if('function' !== typeof fct) { throw new ReferenceError('Function must be defined'); }
   return function() {
     var params = Array.prototype.slice.call(arguments);
     // Curry the function to include the params by closure.
