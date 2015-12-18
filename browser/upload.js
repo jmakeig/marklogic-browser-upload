@@ -10,9 +10,9 @@ document.querySelector('#filedrag')
   .addEventListener('drop', dropHandler);
 
 document.querySelector('#filedrag')
-  .addEventListener("dragover", dragHover, false);
+  .addEventListener('dragover', dragHover, false);
 document.querySelector('#filedrag')
-  .addEventListener("dragleave", dragHover, false);
+  .addEventListener('dragleave', dragHover, false);
 
 function dragHover(e) {
   e.stopPropagation();
@@ -54,13 +54,15 @@ function sendFiles(files) {
 
   // process all File objects
   for (var i = 0, f; f = files[i]; i++) {
+    //console.log('Adding file %s', f);
+    console.dir(f);
     data.append('files', f);
   }
 
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/marklogic/upload.sjs');
   xhr.onload = function() {
-    console.log("Done");
+    console.log('Done');
     console.dir(JSON.parse(xhr.responseText));
   };
 
