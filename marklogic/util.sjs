@@ -37,7 +37,7 @@ function uuid() {
   return sem.uuid().toString().split(':')[2];
 }
 
-// TODO: Isn't there a built-in that does this?
+// TODO: Isn't there a built-in that does this? Yes: <http://docs.marklogic.com/Document.documentFormat>
 function documentKind(node) {
   switch(xdmp.nodeKind(node)) {
     case "document":
