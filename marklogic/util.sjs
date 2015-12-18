@@ -37,5 +37,30 @@ function uuid() {
   return sem.uuid().toString().split(':')[2];
 }
 
+// TODO: Isn't there a built-in that does this?
+function documentKind(node) {
+  switch(xdmp.nodeKind(node)) {
+    case "document":
+      return documentKind(node.root);
+    case "element":
+    case "comment":
+    case "processing-instruction":
+      return "xml";
+    case "object":
+    case "array":
+    case "number":
+    case "boolean":
+    case "null":
+      return "json";
+    case "text":
+      return "text";
+    case "binary":
+      return "binary";
+    default:
+      throw new TypeError(xdmp.nodeKind(node) + ' is not a recognized node kind');
+  }
+}
+
 module.exports.applyAs = applyAs;
 module.exports.uuid = uuid;
+module.exports.documentKind = documentKind;

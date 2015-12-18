@@ -69,14 +69,16 @@ var permissions = xdmp.getRequestFieldNames()
 
 function deriveURI(node, policy, filename) {
   var basename = filename;
+  // console.log(node);
+  var kind = util.documentKind(node);
   switch (policy) {
     case 'filename':
       break;
     case 'id':
-      throw new TypeError('id policy is not yet implemented');
+      basename = extractID(node) + '.' + kind;
       break;
     case 'uuid':
-      basename = util.uuid() + '.json';
+      basename = util.uuid() + '.' + kind;
       break;
     default:
       throw new TypeError(policy + ' is not a valid URI policy');
@@ -84,12 +86,8 @@ function deriveURI(node, policy, filename) {
   return '/' + basename;
 }
 
-function findID(node) {
-  // TODO: Get the id or _id property out of JSON or the corresponding elements out of XML
-}
-
 for(var i = 0; i < files.length; i++) {
-  var node = xdmp.unquote(files[i]);
+  var node = xdmp.unquote(files[i]).next().value; // Yikes! uquote always returns a ValueIterator.
   xdmp.documentInsert(
     deriveURI(node, uris, fileNames[i]),
     node,
