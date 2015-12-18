@@ -12,7 +12,9 @@ var uris = xdmp.getRequestField('uris', 'filename');
 var collectionBatch = xdmp.getRequestField('collection-batch');
 var collectionsDefault = xdmp.getRequestField('collection-defaults');
 var collections = xdmp.getRequestField('collections');
-if('string' === typeof collections) { collections = [collections]; }
+// TODO: Ugly
+if('undefined' === typeof collections || null === collections) { collections = []; }
+else if('string' === typeof collections) { collections = [collections]; }
 if(collectionBatch) {
   collections.push('batch-' + util.uuid());
 }
@@ -41,7 +43,7 @@ function calculatePermissions(permissions, defaults) {
       if(!Array.isArray(role[r])) { role[r] = [role[r]]; }
       perms = perms.concat(
         role[r].map(function(cap){
-          console.log(xdmp.permission(r, cap));
+          //console.log(xdmp.permission(r, cap));
           return xdmp.permission(r, cap);
         })
       );
@@ -55,7 +57,7 @@ function calculatePermissions(permissions, defaults) {
 var permissions = xdmp.getRequestFieldNames()
   .toArray()
   .filter(function(f){
-    console.log(f);
+    //console.log(f);
     return f.match(/^permission\*/);
   })
   .map(function(f){

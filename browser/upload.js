@@ -68,7 +68,7 @@ function sendFiles(files) {
       var complete = event.loaded / event.total;
       progress.value = complete;
       //console.log('Progress %d', complete * 100);
-      console.dir(complete);
+      //console.dir(complete);
     }
   }
 
