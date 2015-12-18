@@ -9,13 +9,8 @@ var util = require('util.sjs');
  * @return {Array}             `{ name: string, count: number}` pairs
  */
 function getCollections(filter, order, direction) {
-  try {
-    var collRef = cts.collectionReference();
-  } catch(e) {
-    return [];
-  }
   return cts.values(
-    collRef, null, [order || 'frequency-order', direction || 'descending', 'document']
+    cts.collectionReference(), null, [order || 'frequency-order', direction || 'descending', 'document']
   )
     .toArray()
     .filter(function(coll) {
@@ -52,8 +47,24 @@ if('GET' === xdmp.getRequestMethod()) {
   db.name = xdmp.databaseName(id);
   db.documentsCount = estimate(cts.andQuery([]), 'document');
   db.propertiesCount = estimate(cts.andQuery([]), 'properties');
-  db.collections = getCollections(/^(?!batch-)/, collectionOrderBy, collectionOrderDirection);
-  db.batches = getCollections(/^batch-/, batchOrderBy, batchOrderDirection);
+  try {
+    db.collections = [
+      {
+        name: '(none)',
+        // TODO: Is this the fastest way to find documents that aren't in a collection?
+        count: cts.estimate(cts.notQuery(cts.collectionQuery(cts.collections())), 'document')
+      }
+    ].concat(
+      getCollections(/^(?!batch-)/, collectionOrderBy, collectionOrderDirection)
+    );
+    db.batches = getCollections(/^batch-/, batchOrderBy, batchOrderDirection);
+  } catch(ex) {
+    if('XDMP-COLLXCNNOTFOUND' === ex.name) {
+      db.collections = db.batches = null;
+    } else {
+      throw ex;
+    }
+  }
 
   xdmp.addResponseHeader('Content-Type', 'application/json; charset=utf-8');
   db;
