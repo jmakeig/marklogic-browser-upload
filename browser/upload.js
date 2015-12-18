@@ -61,6 +61,7 @@ function sendFiles(files) {
   xhr.open('POST', '/marklogic/upload.sjs');
   xhr.onload = function() {
     console.log("Done");
+    console.dir(JSON.parse(xhr.responseText));
   };
 
   xhr.upload.onprogress = function(event) {
