@@ -65,6 +65,14 @@ if('GET' === xdmp.getRequestMethod()) {
       throw ex;
     }
   }
+  db.documentFormats = ['json', 'xml', 'binary', 'text'].map(function(format) {
+    return {
+      format: format,
+      count: cts.estimate(cts.andQuery([]), ['format-' + format, 'document'])
+    }
+  }).sort(function(a, b) {
+    return a.count < b.count; 
+  });
 
   xdmp.addResponseHeader('Content-Type', 'application/json; charset=utf-8');
   db;
