@@ -48,15 +48,15 @@ if('GET' === xdmp.getRequestMethod()) {
   db.documentsCount = estimate(cts.trueQuery(), 'document');
   db.propertiesCount = estimate(cts.trueQuery(), 'properties');
   try {
-    db.collections = [
-      {
-        name: '(none)',
-        // TODO: Is this the fastest way to find documents that aren't in a collection?
-        count: cts.estimate(cts.notQuery(cts.collectionQuery(cts.collections())), 'document')
-      }
-    ].concat(
+    db.collections =
       getCollections(/^(?!batch-)/, collectionOrderBy, collectionOrderDirection)
-    );
+        // FIXME: The abstraction leaks here. applyAs always returns a ValueIterator.
+        .next().value
+        .concat([{
+          name: '(none)',
+          count: cts.estimate(cts.notQuery(cts.collectionQuery(cts.collections())), 'document'),
+          isNone: true
+        }]);
     db.batches = getCollections(/^batch-/, batchOrderBy, batchOrderDirection);
   } catch(ex) {
     if('XDMP-COLLXCNNOTFOUND' === ex.name) {
