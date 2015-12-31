@@ -12,17 +12,12 @@ Object.assign||Object.defineProperty(Object,"assign",{enumerable:!1,configurable
  * @return {Array}             `{ name: string, count: number}` pairs
  */
 function getCollections(filter, order, direction) {
-  try {
-    var collRef = cts.collectionReference();
-  } catch(e) {
-    return [];
-  }
   return cts.values(
-    collRef, null, [order || 'frequency-order', direction || 'descending', 'document']
+    cts.collectionReference(), null, [order || 'frequency-order', direction || 'descending', 'document']
   )
     .toArray()
     .filter(function(coll) {
-      return filter && (coll + '').match(filter);
+      return filter && (coll + '').match(filter); // Need to coerce the Value to a string
     })
     .map(function(coll) {
       return {
@@ -32,23 +27,48 @@ function getCollections(filter, order, direction) {
     });
 }
 
-function getDatabaseStats(collections, batches) {
-  var id = xdmp.database();
-  var defaultSort = {orderBy: 'frequency-order', direction: 'descending'};
-  collections = Object.assign(defaultSort, collections);
-  batches = Object.assign(defaultSort, batches);
+function databaseStats(id, collectionSort, batchSort, formatSort) {
+  var estimate = util.applyAs(cts.estimate, {database: id});
+  var collections = util.applyAs(getCollections, {database: id});
 
-  //var estimate = util.applyAs(cts.estimate, {database: id});
-  //var getCollections = util.applyAs(getCollections, {database: id});
-
-  var db = {}
+  var db = {};
   db.id = id;
   db.name = xdmp.databaseName(id);
-  db.documentsCount = cts.estimate(cts.andQuery([]), 'document');
-  db.propertiesCount = cts.estimate(cts.andQuery([]), 'properties');
-  db.collections = getCollections(/^(?!batch-)/, collections.orderBy, collections.direction);
-  db.batches = getCollections(/^batch-/, batches.orderBy, batches.direction);
+  db.documentsCount = estimate(cts.trueQuery(), 'document');
+  db.propertiesCount = estimate(cts.trueQuery(), 'properties');
+  try {
+    db.collections =
+      collections(/^(?!batch-)/, collectionSort.orderBy, collectionSort.direction)
+        // FIXME: The abstraction leaks here. applyAs always returns a ValueIterator.
+        .next().value
+        .concat([{
+          name: '(none)',
+          count: cts.estimate(cts.notQuery(cts.collectionQuery(cts.collections())), 'document'),
+          isNone: true
+        }]);
+    db.batches = collections(/^batch-/, batchSort.orderBy, batchSort.direction).next().value; // FIXME
+  } catch(ex) {
+    if('XDMP-COLLXCNNOTFOUND' === ex.name) {
+      db.collections = db.batches = null;
+    } else {
+      throw ex;
+    }
+  }
+  // Counts of documents by format,  [{'format': 'xml', 'count': 1234}, …]
+  db.documentFormats = ['json', 'xml', 'binary', 'text'].map(function(format) {
+    return {
+      format: format,
+      count: cts.estimate(cts.trueQuery(), ['format-' + format, 'document'])
+    }
+  }).sort(function(a, b) {
+    if('ascending' === formatSort.direction) {
+      return a.count > b.count;
+    }
+    // descending
+    return a.count < b.count;
+
+  });
   return db;
 }
 
-module.exports.getDatabaseStats = getDatabaseStats;
+module.exports.database = databaseStats;
