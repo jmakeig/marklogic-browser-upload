@@ -24,6 +24,50 @@ function getCollections(filter, order, direction) {
     });
 }
 
+function databaseStats(id, collectionSort, batchSort, formatSort) {
+  var estimate = util.applyAs(cts.estimate, {database: id});
+  var collections = util.applyAs(getCollections, {database: id});
+
+  var db = {};
+  db.id = id;
+  db.name = xdmp.databaseName(id);
+  db.documentsCount = estimate(cts.trueQuery(), 'document');
+  db.propertiesCount = estimate(cts.trueQuery(), 'properties');
+  try {
+    db.collections =
+      collections(/^(?!batch-)/, collectionSort.orderBy, collectionSort.direction)
+        // FIXME: The abstraction leaks here. applyAs always returns a ValueIterator.
+        .next().value
+        .concat([{
+          name: '(none)',
+          count: cts.estimate(cts.notQuery(cts.collectionQuery(cts.collections())), 'document'),
+          isNone: true
+        }]);
+    db.batches = collections(/^batch-/, batchSort.orderBy, batchSort.direction).next().value; // FIXME
+  } catch(ex) {
+    if('XDMP-COLLXCNNOTFOUND' === ex.name) {
+      db.collections = db.batches = null;
+    } else {
+      throw ex;
+    }
+  }
+  // Counts of documents by format,  [{'format': 'xml', 'count': 1234}, …]
+  db.documentFormats = ['json', 'xml', 'binary', 'text'].map(function(format) {
+    return {
+      format: format,
+      count: cts.estimate(cts.trueQuery(), ['format-' + format, 'document'])
+    }
+  }).sort(function(a, b) {
+    if('ascending' === formatSort.direction) {
+      return a.count > b.count;
+    }
+    // descending
+    return a.count < b.count;
+
+  });
+  return db;
+}
+
 if('GET' === xdmp.getRequestMethod()) {
   /**
     GET database stats:
@@ -39,44 +83,12 @@ if('GET' === xdmp.getRequestMethod()) {
   var batchOrderBy = xdmp.getRequestField('batchOrder', 'frequency-order');
   var batchOrderDirection = xdmp.getRequestField('batchDir', 'descending');
 
-  var estimate = util.applyAs(cts.estimate, {database: id});
-  var getCollections = util.applyAs(getCollections, {database: id});
-
-  var db = {};
-  db.id = id;
-  db.name = xdmp.databaseName(id);
-  db.documentsCount = estimate(cts.trueQuery(), 'document');
-  db.propertiesCount = estimate(cts.trueQuery(), 'properties');
-  try {
-    db.collections =
-      getCollections(/^(?!batch-)/, collectionOrderBy, collectionOrderDirection)
-        // FIXME: The abstraction leaks here. applyAs always returns a ValueIterator.
-        .next().value
-        .concat([{
-          name: '(none)',
-          count: cts.estimate(cts.notQuery(cts.collectionQuery(cts.collections())), 'document'),
-          isNone: true
-        }]);
-    db.batches = getCollections(/^batch-/, batchOrderBy, batchOrderDirection);
-  } catch(ex) {
-    if('XDMP-COLLXCNNOTFOUND' === ex.name) {
-      db.collections = db.batches = null;
-    } else {
-      throw ex;
-    }
-  }
-  // Counts of documents by format,  [{'format': 'xml', 'count': 1234}, …]
-  db.documentFormats = ['json', 'xml', 'binary', 'text'].map(function(format) {
-    return {
-      format: format,
-      count: cts.estimate(cts.trueQuery(), ['format-' + format, 'document'])
-    }
-  }).sort(function(a, b) {
-    return a.count < b.count;
-  });
-
   xdmp.addResponseHeader('Content-Type', 'application/json; charset=utf-8');
-  db;
+  databaseStats(id,
+    {orderBy: collectionOrderBy, direction: collectionOrderDirection},
+    {orderBy: batchOrderBy, direction: batchOrderDirection},
+    {orderBy: 'count', direction: 'descending'}
+  );
 } else {
   xdmp.setResponseCode(405, 'Method not supported');
 }
