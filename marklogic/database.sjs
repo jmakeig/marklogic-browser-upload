@@ -14,7 +14,7 @@ function getCollections(filter, order, direction) {
   )
     .toArray()
     .filter(function(coll) {
-      return filter && (coll + '').match(filter);
+      return filter && (coll + '').match(filter); // Need to coerce the Value to a string
     })
     .map(function(coll) {
       return {
@@ -42,7 +42,7 @@ if('GET' === xdmp.getRequestMethod()) {
   var estimate = util.applyAs(cts.estimate, {database: id});
   var getCollections = util.applyAs(getCollections, {database: id});
 
-  var db = {}
+  var db = {};
   db.id = id;
   db.name = xdmp.databaseName(id);
   db.documentsCount = estimate(cts.trueQuery(), 'document');
@@ -65,13 +65,14 @@ if('GET' === xdmp.getRequestMethod()) {
       throw ex;
     }
   }
+  // Counts of documents by format,  [{'format': 'xml', 'count': 1234}, …]
   db.documentFormats = ['json', 'xml', 'binary', 'text'].map(function(format) {
     return {
       format: format,
       count: cts.estimate(cts.trueQuery(), ['format-' + format, 'document'])
     }
   }).sort(function(a, b) {
-    return a.count < b.count; 
+    return a.count < b.count;
   });
 
   xdmp.addResponseHeader('Content-Type', 'application/json; charset=utf-8');
