@@ -45,8 +45,8 @@ if('GET' === xdmp.getRequestMethod()) {
   var db = {}
   db.id = id;
   db.name = xdmp.databaseName(id);
-  db.documentsCount = estimate(cts.andQuery([]), 'document');
-  db.propertiesCount = estimate(cts.andQuery([]), 'properties');
+  db.documentsCount = estimate(cts.trueQuery(), 'document');
+  db.propertiesCount = estimate(cts.trueQuery(), 'properties');
   try {
     db.collections = [
       {
@@ -68,7 +68,7 @@ if('GET' === xdmp.getRequestMethod()) {
   db.documentFormats = ['json', 'xml', 'binary', 'text'].map(function(format) {
     return {
       format: format,
-      count: cts.estimate(cts.andQuery([]), ['format-' + format, 'document'])
+      count: cts.estimate(cts.trueQuery(), ['format-' + format, 'document'])
     }
   }).sort(function(a, b) {
     return a.count < b.count; 
