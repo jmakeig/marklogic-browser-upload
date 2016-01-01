@@ -3,6 +3,16 @@ Object.assign||Object.defineProperty(Object,"assign",{enumerable:!1,configurable
 
 
 (function() {
+
+function logEvent(evt){
+  console.log('%s: %s', evt.type, evt.bubbles ? 'bubbles' : 'doesn’t bubble');
+  //console.dir(evt);
+}
+
+['click', 'change', 'dragover', 'dragleave', 'drop'].forEach(function(evt){
+  document.addEventListener(evt, logEvent);
+});
+
 document.querySelector('#fileselect')
   .addEventListener('change', fileSelectHandler, false);
 
@@ -15,7 +25,7 @@ document.querySelector('#filedrag')
   .addEventListener('dragleave', dragHover, false);
 
 function dragHover(e) {
-  e.stopPropagation();
+  //e.stopPropagation();
 	e.preventDefault();
 }
 
@@ -62,7 +72,6 @@ function sendFiles(files) {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/marklogic/upload.sjs');
   xhr.onload = function() {
-    console.log('Done');
     console.dir(JSON.parse(xhr.responseText));
   };
 
