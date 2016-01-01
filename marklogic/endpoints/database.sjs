@@ -1,5 +1,5 @@
 'use strict'
-var stats = require('./stats.sjs')
+var stats = require('../stats.sjs')
 
 if('GET' === xdmp.getRequestMethod()) {
   /**
