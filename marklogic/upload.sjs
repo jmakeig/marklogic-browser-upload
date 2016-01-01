@@ -1,6 +1,7 @@
 declareUpdate();
 
-var util = require('util.sjs');
+var util = require('./util.sjs');
+var stats = require('./stats.sjs');
 
 // console.log(xdmp.getRequestFieldNames());
 
@@ -117,7 +118,8 @@ function deriveURI(node, policy, filename) {
 }
 
 for(var i = 0; i < files.length; i++) {
-  var node = xdmp.unquote(files[i]).next().value; // Yikes! uquote always returns a ValueIterator.
+  var node = xdmp.unquote(files[i]).next().value; // Yikes! unquote always returns a ValueIterator.
+  console.log(fileNames[i]);
   xdmp.documentInsert(
     deriveURI(node, uris, fileNames[i]),
     node,
@@ -128,4 +130,11 @@ for(var i = 0; i < files.length; i++) {
 
 xdmp.setResponseCode(200, 'OK');
 xdmp.addResponseHeader('Content-Type', 'application/json;charset=utf-8');
-collections;
+
+var databaseStats = util.applyAs(stats.database, {isolation: 'different-transaction'});
+
+var response = {
+  collections: collections,
+  stats: databaseStats()
+};
+response;
