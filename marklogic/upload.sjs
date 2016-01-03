@@ -117,11 +117,13 @@ function deriveURI(node, policy, filename) {
   return '/' + basename;
 }
 
-for(var i = 0; i < files.length; i++) {
+var docCount = files.length;
+for(var i = 0; i < docCount; i++) {
   var node = xdmp.unquote(files[i]).next().value; // Yikes! unquote always returns a ValueIterator.
-  console.log(fileNames[i]);
+  var uri = deriveURI(node, uris, fileNames[i]);
+  console.log('Inserting ' + uri);
   xdmp.documentInsert(
-    deriveURI(node, uris, fileNames[i]),
+    uri,
     node,
     calculatePermissions(permissions, xdmp.getRequestField('permission-defaults')),
     collections
@@ -131,10 +133,11 @@ for(var i = 0; i < files.length; i++) {
 xdmp.setResponseCode(200, 'OK');
 xdmp.addResponseHeader('Content-Type', 'application/json;charset=utf-8');
 
-var databaseStats = util.applyAs(stats.database, {isolation: 'different-transaction'});
+//var databaseStats = util.applyAs(stats.database, {isolation: 'different-transaction'});
 
-var response = {
-  collections: collections,
-  stats: databaseStats()
-};
+var response =
+  {
+    count: docCount,
+    collections: collections
+  };
 response;
