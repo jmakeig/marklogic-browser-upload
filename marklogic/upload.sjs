@@ -64,7 +64,7 @@ function calculatePermissions(permissions, defaults) {
     }
   });
   if(defaults) {
-    perms = perms.concat(xdmp.defaultPermissions());
+    return perms.concat(xdmp.defaultPermissions());
   }
   return perms;
 }
