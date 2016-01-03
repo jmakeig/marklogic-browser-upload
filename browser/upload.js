@@ -4,58 +4,23 @@ Object.assign||Object.defineProperty(Object,"assign",{enumerable:!1,configurable
 
 (function() {
 
-function logEvent(evt){
-  console.log('%s: %s', evt.type, evt.bubbles ? 'bubbles' : 'doesn’t bubble');
-  //console.dir(evt);
-}
-
-['click', 'change', 'dragover', 'dragleave', 'drop'].forEach(function(evt){
-  document.addEventListener(evt, logEvent);
-});
-
-document.querySelector('#fileselect')
-  .addEventListener('change', fileSelectHandler, false);
-
-document.querySelector('#filedrag')
-  .addEventListener('drop', dropHandler);
-
-document.querySelector('#filedrag')
-  .addEventListener('dragover', dragHover, false);
-document.querySelector('#filedrag')
-  .addEventListener('dragleave', dragHover, false);
-
 function dragHover(e) {
   //e.stopPropagation();
 	e.preventDefault();
 }
 
-/*
-var EventEmitter = {
-  on: function(name, handler) {
-    if(!this.events) { this.events = {}; }
-    if(!Array.isArray(this.events[name])) { this.events[name] = []; }
-    this.events[name].push(handler);
-  },
-  emit: function(name, data) {
-    if('string' !== typeof(name) || name.length < 1) throw new TypeError('Name must be a string');
-    if(!this.events || !Array.isArray(this.events[name]) || this.events[name].length < 1) return;
-
-    var data = Array.prototype.slice.call(arguments, 1);
-    for(var i = 0; i < this.events[name].length; i++) {
-      var handler = this.events[name][i];
-      handler.apply(null, data);
-    }
+function dropHandler(e) {
+  // console.dir(e.target);
+  // console.dir(this);
+  if(this === e.target) {
+    sendFiles(e.dataTransfer.files);
   }
 }
 
-var FileUploader = {
-    init: function(id) { return this; }
+function fileSelectHandler(e) {
+  var files = e.target.files; // FileList
+  sendFiles(files);
 }
-Object.assign(FileUploader, EventEmitter);
-
-var fu = Object.create(FileUploader).init();
-*/
-
 
 function sendFiles(files) {
   var data = new FormData(document.getElementById('upload'));
@@ -73,6 +38,8 @@ function sendFiles(files) {
   xhr.open('POST', '/marklogic/upload.sjs');
   xhr.onload = function() {
     console.dir(JSON.parse(xhr.responseText));
+    // FIXME: Change this to a Promise
+    updateDatabaseStats(document.querySelector('#database'));
   };
 
   xhr.upload.onprogress = function(event) {
@@ -87,19 +54,138 @@ function sendFiles(files) {
   xhr.send(data);
 }
 
-function dropHandler(e) {
-  // console.dir(e.target);
-  // console.dir(this);
-  if(this === e.target) {
-    sendFiles(e.dataTransfer.files);
+/**
+ *
+ * @param  {[type]} handler [description]
+ * @return {Promise}         [description]
+ */
+function getDatabaseStats(handler) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/marklogic/endpoints/database.sjs');
+    xhr.onload = function() {
+      // TODO: Check status code and reject accordingly
+      resolve(JSON.parse(xhr.responseText));
+    };
+    xhr.onerror = function() {
+      reject(Error("Network Error"));
+    };
+    xhr.send();
+  });
+}
+
+function renderDatabaseStats(el, db) {
+  /*
+  <h2>Documents</h2>
+  <div>114,328 documents</div>
+  <div>1,187 properties</div>
+  <h3>Collections</h3>
+  <table>
+    <tr><td>staging</td><td class="number">89,995</td><td class="button"><button name="collection-staging-clear" value="clear">Clear…</button></td></tr>
+    <tr><td>production</td><td class="number">24,333</td><td class="button"><button name="collection-production-clear" value="clear">Clear…</button></td></tr>
+    <tr><td>batch-123</td><td class="number">100</td><td class="button"><button name="collection-batch-123-clear" value="clear">Clear…</button></td></tr>
+    <tr><td>batch-456</td><td class="number">87</td><td class="button"><button name="collection-batch-456-clear" value="clear">Clear…</button></td></tr>
+  </table>
+  <h3>Formats</h3>
+  <table>
+    <tr><td>json</td><td class="number">89,995</td></tr>
+    <tr><td>xml</td><td class="number">24,333</td></tr>
+    <tr><td>binary</td><td class="number">100</td></tr>
+    <tr><td>text</td><td class="number">87</td></tr>
+  </table>
+  */
+
+  function _el(localname, classList, attrs, text) {
+    var elem = document.createElement(localname || 'div');
+    elem.textContent = text;
+    if(classList) {
+      classList.forEach(function(cls){
+        elem.classList.add(cls);
+      });
+    }
+    if(attrs) {
+      // for(key in attrs) {
+      //   elem.setAttribute(key, attrs[key]);
+      // }
+    }
+    return elem;
   }
+  function div(text)                   { return _el('div', undefined, undefined, text);}
+  function h2 (text)                   { return _el('h2', undefined, undefined, text);}
+  function h3 (text)                   { return _el('h3', undefined, undefined, text);}
+  function td (text, classList, attrs) { return _el('td', classList, attrs, text);}
+
+  console.log(db);
+  var parent = el.parentNode;
+
+  var section = el.cloneNode(false);
+  section.appendChild(h2(db.name));
+  section.appendChild(div(db.documentsCount + ' documents'));
+  section.appendChild(div(db.propertiesCount + ' properties'));
+
+  section.appendChild(h3('Document Formats'));
+  var table = document.createElement('table');
+  db.documentFormats.forEach(function(coll){
+    var row = document.createElement('tr');
+      row.appendChild(td(coll.format));
+      row.appendChild(td(coll.count, ['number']));
+    table.appendChild(row);
+  });
+  section.appendChild(table);
+
+  section.appendChild(h3('Collections'));
+  var table = document.createElement('table');
+  db.collections.forEach(function(coll){
+    var row = document.createElement('tr');
+      row.appendChild(td(coll.name));
+      row.appendChild(td(coll.count, ['number']));
+    table.appendChild(row);
+  });
+  section.appendChild(table);
+
+  section.appendChild(h3('Batches'));
+  var table = document.createElement('table');
+  db.batches.forEach(function(coll){
+    var row = document.createElement('tr');
+      row.appendChild(td(coll.name));
+      row.appendChild(td(coll.count, ['number']));
+    table.appendChild(row);
+  });
+  section.appendChild(table);
+
+  parent.replaceChild(section, el);
 }
 
-function fileSelectHandler(e) {
-  var files = e.target.files; // FileList
-  sendFiles(files);
-}
 
-function progressHandler() {}
+// function logEvent(evt){
+//   console.log('%s: %s', evt.type, evt.bubbles ? 'bubbles' : 'doesn’t bubble');
+//   //console.dir(evt);
+// }
+
+// ['click', 'change', 'dragover', 'dragleave', 'drop'].forEach(function(evt){
+//   document.addEventListener(evt, logEvent);
+// });
+
+document.querySelector('#fileselect')
+  .addEventListener('change', fileSelectHandler, false);
+
+document.querySelector('#filedrag')
+  .addEventListener('drop', dropHandler);
+
+document.querySelector('#filedrag')
+  .addEventListener('dragover', dragHover, false);
+document.querySelector('#filedrag')
+  .addEventListener('dragleave', dragHover, false);
+
+function updateDatabaseStats(el) {
+  getDatabaseStats()
+    .then(function(stats){
+      renderDatabaseStats(el, stats);
+    })
+    .catch(function(err){
+      console.error(err);
+    });
+}
+updateDatabaseStats(document.querySelector('#database'));
 
 })();
