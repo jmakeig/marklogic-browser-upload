@@ -1,7 +1,6 @@
 declareUpdate();
 
 var util = require('./util.sjs');
-var stats = require('./stats.sjs');
 
 // console.log(xdmp.getRequestFieldNames());
 
@@ -132,8 +131,6 @@ for(var i = 0; i < docCount; i++) {
 
 xdmp.setResponseCode(200, 'OK');
 xdmp.addResponseHeader('Content-Type', 'application/json;charset=utf-8');
-
-//var databaseStats = util.applyAs(stats.database, {isolation: 'different-transaction'});
 
 var response =
   {
