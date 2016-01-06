@@ -135,22 +135,26 @@ function renderDatabaseStats(el, db) {
 
   section.appendChild(h3('Collections'));
   var table = document.createElement('table');
-  db.collections.forEach(function(coll){
-    var row = document.createElement('tr');
-      row.appendChild(td(coll.name));
-      row.appendChild(td(coll.count, ['number']));
-    table.appendChild(row);
-  });
+  if(Array.isArray(db.collections)) {
+    db.collections.forEach(function(coll){
+      var row = document.createElement('tr');
+        row.appendChild(td(coll.name));
+        row.appendChild(td(coll.count, ['number']));
+      table.appendChild(row);
+    });
+  }
   section.appendChild(table);
 
   section.appendChild(h3('Batches'));
   var table = document.createElement('table');
-  db.batches.forEach(function(coll){
-    var row = document.createElement('tr');
-      row.appendChild(td(coll.name));
-      row.appendChild(td(coll.count, ['number']));
-    table.appendChild(row);
-  });
+  if(Array.isArray(db.batches)) {
+    db.batches.forEach(function(coll){
+      var row = document.createElement('tr');
+        row.appendChild(td(coll.name));
+        row.appendChild(td(coll.count, ['number']));
+      table.appendChild(row);
+    });
+  }
   section.appendChild(table);
 
   parent.replaceChild(section, el);
