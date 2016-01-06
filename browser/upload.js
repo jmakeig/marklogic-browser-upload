@@ -95,25 +95,40 @@ function renderDatabaseStats(el, db) {
   </table>
   */
 
-  function _el(localname, classList, attrs, text) {
+  function _el(localname, classList, attrs, contents) {
     var elem = document.createElement(localname || 'div');
-    elem.textContent = text;
+		if('string' === typeof contents) {
+    	elem.textContent = contents;
+		} else if('number' === typeof contents) {
+			elem.textContent = contents.toString();
+		}
+		else if(contents instanceof HTMLElement) {
+			elem.appendChild(contents);
+		}
+		else if((Array.isArray(contents) && contents[0] instanceof HTMLElement) || contents instanceof NodeList) {
+			// https://developer.mozilla.org/en-US/docs/Web/API/NodeList
+			Array.prototype.forEach.call(contents, function(item){
+				elem.appendChild(item);
+			});
+		}
     if(classList) {
+			if('string' === typeof classList) { classList = [classList]; }
       classList.forEach(function(cls){
         elem.classList.add(cls);
       });
     }
     if(attrs) {
-      // for(key in attrs) {
-      //   elem.setAttribute(key, attrs[key]);
-      // }
+      for(key in attrs) {
+        elem.setAttribute(key, attrs[key]);
+      }
     }
     return elem;
   }
-  function div(text)                   { return _el('div', undefined, undefined, text);}
-  function h2 (text)                   { return _el('h2', undefined, undefined, text);}
-  function h3 (text)                   { return _el('h3', undefined, undefined, text);}
-  function td (text, classList, attrs) { return _el('td', classList, attrs, text);}
+  function div   (t)       { return _el('div',    undefined, undefined, t);}
+  function h2    (t)       { return _el('h2',     undefined, undefined, t);}
+  function h3    (t)       { return _el('h3',     undefined, undefined, t);}
+  function td    (t, c, a) { return _el('td',     c, a, t);}
+	function button(t, c, a) { return _el('button', c, a, t);}
 
   console.log(db);
   var parent = el.parentNode;
