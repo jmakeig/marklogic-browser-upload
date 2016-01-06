@@ -144,6 +144,10 @@ function renderDatabaseStats(el, db) {
     var row = document.createElement('tr');
       row.appendChild(td(coll.format));
       row.appendChild(td(coll.count, ['number']));
+			row.appendChild(td(
+				button('Clear', undefined, {name: 'format-clear', value: coll.format}),
+				'button'
+			));
     table.appendChild(row);
   });
   section.appendChild(table);
@@ -155,6 +159,10 @@ function renderDatabaseStats(el, db) {
       var row = document.createElement('tr');
         row.appendChild(td(coll.name));
         row.appendChild(td(coll.count, ['number']));
+				row.appendChild(td(
+					button('Clear', undefined, {name: 'collection-clear', value: coll.name}),
+					'button'
+				));
       table.appendChild(row);
     });
   }
@@ -167,6 +175,10 @@ function renderDatabaseStats(el, db) {
       var row = document.createElement('tr');
         row.appendChild(td(coll.name));
         row.appendChild(td(coll.count, ['number']));
+				row.appendChild(td(
+					button('Clear', undefined, {name: 'collection-clear', value: coll.name}),
+					'button'
+				));
       table.appendChild(row);
     });
   }
