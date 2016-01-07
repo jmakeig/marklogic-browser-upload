@@ -22,7 +22,8 @@ td.check {
 	text-align: center;
 }
 td.button {
-	width: 4em;
+	width: 2em;
+	text-align: right;
 }
 td.number {
 	text-align: right;
