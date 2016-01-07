@@ -57,7 +57,7 @@ function sendFiles(files) {
 /**
  *
  * @param  {[type]} handler [description]
- * @return {Promise}         [description]
+ * @return {Promise}
  */
 function getDatabaseStats(handler) {
   return new Promise(function(resolve, reject) {
@@ -127,7 +127,8 @@ function renderDatabaseStats(el, db) {
   function div   (t)       { return _el('div',    undefined, undefined, t);}
   function h2    (t)       { return _el('h2',     undefined, undefined, t);}
   function h3    (t)       { return _el('h3',     undefined, undefined, t);}
-  function td    (t, c, a) { return _el('td',     c, a, t);}
+	function tr    (t, c, a) { return _el('tr',     c, a, t);}
+	function td    (t, c, a) { return _el('td',     c, a, t);}
 	function button(t, c, a) { return _el('button', c, a, t);}
 
   console.log(db);
@@ -207,6 +208,36 @@ document.querySelector('#filedrag')
   .addEventListener('dragover', dragHover, false);
 document.querySelector('#filedrag')
   .addEventListener('dragleave', dragHover, false);
+
+function clickHandler(evt) {
+	evt.preventDefault();
+	// console.log(evt.target.nodeName);
+	var target = evt.target;
+	if('button' === evt.target.nodeName.toLowerCase()) {
+		console.log(target);
+		clearCollection(target.value)
+			.then(function(deletedCollections) { console.log(deletedCollections); })
+			.catch(function(err) { console.error(err); });
+		evt.preventDefault();
+	}
+}
+// Would be good to attach to database#section, but that gets swapped out in rendering
+document.querySelector('form').addEventListener('click', clickHandler, true);
+
+function clearCollection(collection) {
+	return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/marklogic/endpoints/documents.sjs?coll=' + collection);
+    xhr.onload = function() {
+      // TODO: Check status code and reject accordingly
+      resolve(JSON.parse(xhr.responseText));
+    };
+    xhr.onerror = function() {
+      reject(Error("Network Error"));
+    };
+    xhr.send();
+  });
+}
 
 function updateDatabaseStats(el) {
   getDatabaseStats()
