@@ -1,9 +1,11 @@
 // Object.assign polyfill
 Object.assign||Object.defineProperty(Object,"assign",{enumerable:!1,configurable:!0,writable:!0,value:function(e){"use strict";if(void 0===e||null===e)throw new TypeError("Cannot convert first argument to object");for(var r=Object(e),t=1;t<arguments.length;t++){var n=arguments[t];if(void 0!==n&&null!==n){n=Object(n);for(var o=Object.keys(n),a=0,i=o.length;i>a;a++){var c=o[a],b=Object.getOwnPropertyDescriptor(n,c);void 0!==b&&b.enumerable&&(r[c]=n[c])}}}return r}});
 
+/* TODO: Need to get the inital state from the server */
 const initialState = {
+	databaseID: "16204519326364673683",
 	isFetchingDatabaseStats: false,
-	databaseStats: null /*{
+	databaseStats: {
 	  "id": "16204519326364673683",
 	  "name": "Documents",
 	  "documentsCount": 0,
@@ -35,7 +37,7 @@ const initialState = {
 	      "count": 0
 	    }
 	  ]
-	}*/,
+	},
 	files: {
 		uploadProgress: null,
 		fileList: null
@@ -72,13 +74,13 @@ function reducer(state, action) {
 			break;
 		case 'DATABASE_STATS_RECEIVE':
 			console.dir(action);
-			return Object.assign({}, state, {databaseStats: action.stats});
+			return Object.assign({}, state, {isFetchingDatabaseStats: false, databaseStats: action.stats});
 			break;
 		case 'CLEAR_COLLECTION':
 			return state;
 			break;
 		default:
-			console.dir(action);
+			console.warn('default state');
 			return state;
 	}
 }
