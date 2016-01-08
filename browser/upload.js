@@ -112,9 +112,15 @@ function fetchDatabaseStats(id) {
 const createStoreWithMiddleware = Redux.applyMiddleware(thunkMiddleware)(Redux.createStore);
 // Redux.createStore(reducer, initialState);
 const store = createStoreWithMiddleware(reducer, initialState);
-console.log(store.getState());
-store.dispatch(fetchDatabaseStats('123456'));
-
+// console.log(store.getState());
+store.subscribe(function() {
+	console.log(store.getState());
+	const state = store.getState();
+	if(state.databaseStats) {
+		renderDatabaseStats(document.querySelector('#database'), store.getState().databaseStats);
+	}
+});
+store.dispatch(fetchDatabaseStats(undefined /* FIXME */));
 
 /* Yikes! Babel conversion of <https://github.com/gaearon/redux-thunk/blob/master/src/index.js> */
 function thunkMiddleware(_ref) {
@@ -376,6 +382,6 @@ function updateDatabaseStats(el) {
       console.error(err);
     });
 }
-updateDatabaseStats(document.querySelector('#database'));
+// updateDatabaseStats(document.querySelector('#database'));
 
 //})();
