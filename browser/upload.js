@@ -1,8 +1,136 @@
 // Object.assign polyfill
 Object.assign||Object.defineProperty(Object,"assign",{enumerable:!1,configurable:!0,writable:!0,value:function(e){"use strict";if(void 0===e||null===e)throw new TypeError("Cannot convert first argument to object");for(var r=Object(e),t=1;t<arguments.length;t++){var n=arguments[t];if(void 0!==n&&null!==n){n=Object(n);for(var o=Object.keys(n),a=0,i=o.length;i>a;a++){var c=o[a],b=Object.getOwnPropertyDescriptor(n,c);void 0!==b&&b.enumerable&&(r[c]=n[c])}}}return r}});
 
+const initialState = {
+	isFetchingDatabaseStats: false,
+	databaseStats: null /*{
+	  "id": "16204519326364673683",
+	  "name": "Documents",
+	  "documentsCount": 0,
+	  "propertiesCount": 0,
+	  "collections": [
+	    {
+	      "name": "(none)",
+	      "count": 0,
+	      "isNone": true,
+				isUpdated: false // Use this to indicate something that the UI should highlight as changed
+	    }
+	  ],
+	  "batches": [],
+	  "documentFormats": [
+	    {
+	      "format": "json",
+	      "count": 0
+	    },
+	    {
+	      "format": "xml",
+	      "count": 0
+	    },
+	    {
+	      "format": "binary",
+	      "count": 0
+	    },
+	    {
+	      "format": "text",
+	      "count": 0
+	    }
+	  ]
+	}*/,
+	files: {
+		uploadProgress: null,
+		fileList: null
+	},
+	uploadSettings: {
+		uri: 'filename', // id, uuid
+		collections: {
+			user: [
+					// {
+					// 	name: '',
+					// 	enabled: true
+					// }
+			],
+			batch: true,
+			'default': true
+		},
+		permissions: {
+			user: [
+				// 'some-role': ['read', 'update', 'insert', 'execute']
+			],
+			'default': true,
+			cachedRoles: null // Pre-load the roles from the server for auto-suggest
+		}
+	}
+}
 
-(function() {
+function reducer(state, action) {
+	if('undefined' === typeof state) {
+		state = initialState;
+	}
+	switch (action.type) {
+		case 'DATABASE_STATS_REFRESH':
+			return Object.assign({}, state, {isFetchingDatabaseStats: true});
+			break;
+		case 'DATABASE_STATS_RECEIVE':
+			console.dir(action);
+			return Object.assign({}, state, {databaseStats: action.stats});
+			break;
+		case 'CLEAR_COLLECTION':
+			return state;
+			break;
+		default:
+			console.dir(action);
+			return state;
+	}
+}
+
+// Action creator
+function refreshDatabaseStats(id){
+	return {
+		type: 'DATABASE_STATS_REFRESH'
+	}
+}
+
+function receiveDatabaseStats(id, stats) {
+	return {
+		type: 'DATABASE_STATS_RECEIVE',
+		stats: stats
+	}
+}
+
+function fetchDatabaseStats(id) {
+	return function(dispatch) {
+		dispatch(refreshDatabaseStats(id));
+
+		return getDatabaseStats(id)
+			.then(function(stats) {
+				dispatch(receiveDatabaseStats(id, stats))
+			});
+			// TODO: .catch()
+	}
+}
+
+const createStoreWithMiddleware = Redux.applyMiddleware(thunkMiddleware)(Redux.createStore);
+// Redux.createStore(reducer, initialState);
+const store = createStoreWithMiddleware(reducer, initialState);
+console.log(store.getState());
+store.dispatch(fetchDatabaseStats('123456'));
+
+
+/* Yikes! Babel conversion of <https://github.com/gaearon/redux-thunk/blob/master/src/index.js> */
+function thunkMiddleware(_ref) {
+  var dispatch = _ref.dispatch;
+  var getState = _ref.getState;
+
+  return function (next) {
+    return function (action) {
+      return typeof action === 'function' ? action(dispatch, getState) : next(action);
+    };
+  };
+}
+
+// dispatch(actionCreator( return {type: 'ACTION_TYPE', data:…}))
+
+//(function() {
 
 function dragHover(e) {
   //e.stopPropagation();
@@ -59,7 +187,7 @@ function sendFiles(files) {
  * @param  {[type]} handler [description]
  * @return {Promise}
  */
-function getDatabaseStats(handler) {
+function getDatabaseStats(id) {
   return new Promise(function(resolve, reject) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/marklogic/endpoints/database.sjs');
@@ -131,7 +259,7 @@ function renderDatabaseStats(el, db) {
 	function td    (t, c, a) { return _el('td',     c, a, t);}
 	function button(t, c, a) { return _el('button', c, a, t);}
 
-  console.log(db);
+  // console.log(JSON.stringify(db, null, 2));
   var parent = el.parentNode;
 
   var section = el.cloneNode(false);
@@ -250,4 +378,4 @@ function updateDatabaseStats(el) {
 }
 updateDatabaseStats(document.querySelector('#database'));
 
-})();
+//})();
