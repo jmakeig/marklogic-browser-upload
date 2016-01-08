@@ -88,13 +88,15 @@ function reducer(state, action) {
 // Action creator
 function refreshDatabaseStats(id){
 	return {
-		type: 'DATABASE_STATS_REFRESH'
+		type: 'DATABASE_STATS_REFRESH',
+		id: id
 	}
 }
 
 function receiveDatabaseStats(id, stats) {
 	return {
 		type: 'DATABASE_STATS_RECEIVE',
+		id: id,
 		stats: stats
 	}
 }
@@ -111,9 +113,11 @@ function fetchDatabaseStats(id) {
 	}
 }
 
-const createStoreWithMiddleware = Redux.applyMiddleware(thunkMiddleware)(Redux.createStore);
+const store = Redux.applyMiddleware(thunkMiddleware)
+	(Redux.createStore) // middleware store creator
+		(reducer, initialState); // create the store
 // Redux.createStore(reducer, initialState);
-const store = createStoreWithMiddleware(reducer, initialState);
+
 // console.log(store.getState());
 store.subscribe(function() {
 	console.log(store.getState());
