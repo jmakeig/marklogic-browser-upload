@@ -297,7 +297,7 @@ function renderDatabaseStats(el, db) {
 		if('string' === typeof contents) {
     	elem.textContent = contents;
 		} else if('number' === typeof contents) {
-			elem.textContent = contents.toLocaleString('en-us'); // FIXME: Get from model/store
+			elem.textContent = contents.toLocaleString('en-us'); // FIXME: Get locale from model/store
 		}
 		else if(contents instanceof HTMLElement) {
 			elem.appendChild(contents);
@@ -370,8 +370,8 @@ function renderDatabaseStats(el, db) {
   section.appendChild(table);
 
   section.appendChild(h3('Batches'));
-  var table = document.createElement('table');
-  if(Array.isArray(db.batches)) {
+  if(Array.isArray(db.batches) && db.batches.length > 0) {
+		var table = document.createElement('table');
     db.batches.forEach(function(coll){
       var row = document.createElement('tr');
         row.appendChild(td(coll.name));
@@ -382,8 +382,10 @@ function renderDatabaseStats(el, db) {
 				));
       table.appendChild(row);
     });
-  }
-  section.appendChild(table);
+		section.appendChild(table);
+  } else {
+		section.appendChild(div('none'));
+	}
 
   parent.replaceChild(section, el);
 }
