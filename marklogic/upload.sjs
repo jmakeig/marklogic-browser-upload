@@ -123,7 +123,7 @@ for(var i = 0; i < docCount; i++) {
   if(files[i] instanceof BinaryNode || files[i] instanceof Text) {
     node = files[i];
   } else {
-    node = fn.head(xdmp.unquote(files[i])); // Yikes! unquote always returns a ValueIterator.
+    node = xdmp.unquote(files[i]).next().value; // Yikes! unquote always returns a ValueIterator.
   }
   var uri = deriveURI(node, uris, fileNames[i]);
   console.log('Inserting ' + uri);
