@@ -5,6 +5,7 @@ Object.assign||Object.defineProperty(Object,"assign",{enumerable:!1,configurable
 const initialState = {
 	databaseID: "16204519326364673683",
 	isFetchingDatabaseStats: false,
+	locale: navigator.language,
 	databaseStats: {
 	  "id": "16204519326364673683",
 	  "name": "Documents",
@@ -246,7 +247,7 @@ function renderDatabaseStats(el, db) {
 			elem.appendChild(contents);
 		}
 		else if((Array.isArray(contents) && contents[0] instanceof HTMLElement) || contents instanceof NodeList) {
-			// https://developer.mozilla.org/en-US/docs/Web/API/NodeList
+			// <https://developer.mozilla.org/en-US/docs/Web/API/NodeList>
 			Array.prototype.forEach.call(contents, function(item){
 				elem.appendChild(item);
 			});
@@ -264,12 +265,15 @@ function renderDatabaseStats(el, db) {
     }
     return elem;
   }
-  function div   (t)       { return _el('div',    undefined, undefined, t);}
-  function h2    (t)       { return _el('h2',     undefined, undefined, t);}
-  function h3    (t)       { return _el('h3',     undefined, undefined, t);}
-	function tr    (t, c, a) { return _el('tr',     c, a, t);}
-	function td    (t, c, a) { return _el('td',     c, a, t);}
-	function button(t, c, a) { return _el('button', c, a, t);}
+  function div   (t, c, a) {return _el('div',    c, a, t);}
+	function h1    (t, c, a) {return _el('h1',     c, a, t);}
+  function h2    (t, c, a) {return _el('h2',     c, a, t);}
+  function h3    (t, c, a) {return _el('h3',     c, a, t);}
+	function tr    (t, c, a) {return _el('tr',     c, a, t);}
+	function td    (t, c, a) {return _el('td',     c, a, t);}
+	function button(t, c, a) {return _el('button', c, a, t);}
+	function span  (t, c, a) {return _el('span',   c, a, t);}
+	function p     (t, c, a) {return _el('p',      c, a, t);}
 
   // console.log(JSON.stringify(db, null, 2));
   var parent = el.parentNode;
