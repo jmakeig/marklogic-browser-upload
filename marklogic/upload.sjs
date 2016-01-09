@@ -118,7 +118,13 @@ function deriveURI(node, policy, filename) {
 
 var docCount = files.length;
 for(var i = 0; i < docCount; i++) {
-  var node = xdmp.unquote(files[i]).next().value; // Yikes! unquote always returns a ValueIterator.
+  console.log(files[i] instanceof BinaryNode)
+  var node;
+  if(files[i] instanceof BinaryNode || files[i] instanceof Text) {
+    node = files[i];
+  } else {
+    node = fn.head(xdmp.unquote(files[i])); // Yikes! unquote always returns a ValueIterator.
+  }
   var uri = deriveURI(node, uris, fileNames[i]);
   console.log('Inserting ' + uri);
   xdmp.documentInsert(
