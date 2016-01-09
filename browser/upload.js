@@ -77,7 +77,8 @@ function reducer(state, action) {
 			console.dir(action);
 			return Object.assign({}, state, {isFetchingDatabaseStats: false, databaseStats: action.stats});
 			break;
-		case 'CLEAR_COLLECTION':
+		case 'COLLECTION_CLEAR_INTENT': // TODO: Put spinner indicator for individual collection?
+		case 'COLLECTION_CLEAR_RECEIVE':
 			return state;
 			break;
 		default:
@@ -102,6 +103,7 @@ function receiveDatabaseStats(id, stats) {
 	}
 }
 
+// Thunk action creator
 function fetchDatabaseStats(id) {
 	return function(dispatch) {
 		dispatch(refreshDatabaseStats(id));
@@ -112,6 +114,79 @@ function fetchDatabaseStats(id) {
 			});
 			// TODO: .catch()
 	}
+}
+
+/**
+ *
+ * @param  {[type]} handler [description]
+ * @return {Promise}
+ */
+function getDatabaseStats(id) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/marklogic/endpoints/database.sjs');
+    xhr.onload = function() {
+      // TODO: Check status code and reject accordingly
+      resolve(JSON.parse(xhr.responseText));
+    };
+    xhr.onerror = function() {
+      reject(Error("Network Error"));
+    };
+    xhr.send();
+  });
+}
+
+// Action creator
+function intendCollectionClear(collection) {
+	return {
+		type: 'COLLECTION_CLEAR_INTENT',
+		collection: collection
+	}
+}
+
+// Action creator
+function receiveCollectionCleared(collection) {
+	return {
+		type: 'COLLECTION_CLEAR_RECEIVE',
+		collection: collection
+	}
+}
+
+// Thunk action creator
+function fetchCollectionClear(collection) {
+	return function(dispatch) {
+		dispatch(intendCollectionClear(collection));
+
+		return deleteCollection(collection)
+			.then(function(coll) { // FIXME: This returns { collections: […]}, not a string
+				dispatch(receiveCollectionCleared(coll))
+			})
+			.then(function() {
+				dispatch(fetchDatabaseStats(undefined)); // FIXME: How do I chain actions?
+			});
+			// TODO: .catch()
+	}
+}
+
+/**
+ * Does the actual work of clearing the collection.``
+ * @param  {string} collection The collection URI
+ * @return {Promise}
+ */
+function deleteCollection(collection) {
+	if(!collection) { throw new TypeError('Collection cannot be empty'); }
+	return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/marklogic/endpoints/documents.sjs?coll=' + collection);
+    xhr.onload = function() {
+      // TODO: Check status code and reject accordingly
+      resolve(JSON.parse(xhr.responseText));
+    };
+    xhr.onerror = function() {
+      reject(Error("Network Error"));
+    };
+    xhr.send();
+  });
 }
 
 const store = Redux.applyMiddleware(thunkMiddleware)
@@ -193,26 +268,6 @@ function sendFiles(files) {
   }
 
   xhr.send(data);
-}
-
-/**
- *
- * @param  {[type]} handler [description]
- * @return {Promise}
- */
-function getDatabaseStats(id) {
-  return new Promise(function(resolve, reject) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/marklogic/endpoints/database.sjs');
-    xhr.onload = function() {
-      // TODO: Check status code and reject accordingly
-      resolve(JSON.parse(xhr.responseText));
-    };
-    xhr.onerror = function() {
-      reject(Error("Network Error"));
-    };
-    xhr.send();
-  });
 }
 
 function renderDatabaseStats(el, db) {
@@ -354,34 +409,18 @@ document.querySelector('#filedrag')
   .addEventListener('dragleave', dragHover, false);
 
 function clickHandler(evt) {
-	evt.preventDefault();
+	//evt.preventDefault(); // TODO: Turn this off in "production"
 	// console.log(evt.target.nodeName);
 	var target = evt.target;
 	if('button' === evt.target.nodeName.toLowerCase()) {
-		console.log(target);
-		clearCollection(target.value)
-			.then(function(deletedCollections) { console.log(deletedCollections); })
-			.catch(function(err) { console.error(err); });
+		console.log(target.value);
+		store.dispatch(fetchCollectionClear(target.value));
 		evt.preventDefault();
 	}
 }
 // Would be good to attach to database#section, but that gets swapped out in rendering
 document.querySelector('form').addEventListener('click', clickHandler, true);
 
-function clearCollection(collection) {
-	return new Promise(function(resolve, reject) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('DELETE', '/marklogic/endpoints/documents.sjs?coll=' + collection);
-    xhr.onload = function() {
-      // TODO: Check status code and reject accordingly
-      resolve(JSON.parse(xhr.responseText));
-    };
-    xhr.onerror = function() {
-      reject(Error("Network Error"));
-    };
-    xhr.send();
-  });
-}
 
 function updateDatabaseStats(el) {
   getDatabaseStats()
