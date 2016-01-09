@@ -240,7 +240,7 @@ function renderDatabaseStats(el, db) {
 		if('string' === typeof contents) {
     	elem.textContent = contents;
 		} else if('number' === typeof contents) {
-			elem.textContent = contents.toString();
+			elem.textContent = contents.toLocaleString('en-us'); // FIXME: Get from model/store
 		}
 		else if(contents instanceof HTMLElement) {
 			elem.appendChild(contents);
