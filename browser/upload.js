@@ -153,7 +153,7 @@ function receiveCollectionCleared(collection) {
 }
 
 // Thunk action creator
-function fetchCollectionClear(collection) {
+function clearCollection(collection) {
 	return function(dispatch) {
 		dispatch(intendCollectionClear(collection));
 
@@ -255,7 +255,8 @@ function sendFiles(files) {
   xhr.onload = function() {
     console.dir(JSON.parse(xhr.responseText));
     // FIXME: Change this to a Promise
-    updateDatabaseStats(document.querySelector('#database'));
+    //updateDatabaseStats(document.querySelector('#database'));
+    store.dispatch(fetchDatabaseStats(undefined));
   };
 
   xhr.upload.onprogress = function(event) {
@@ -413,24 +414,17 @@ function clickHandler(evt) {
 	// console.log(evt.target.nodeName);
 	var target = evt.target;
 	if('button' === evt.target.nodeName.toLowerCase()) {
-		console.log(target.value);
-		store.dispatch(fetchCollectionClear(target.value));
+		switch (target.name) {
+			case 'collection-clear':
+				store.dispatch(clearCollection(target.value));
+				break;
+			default:
+				//
+		}
 		evt.preventDefault();
 	}
 }
 // Would be good to attach to database#section, but that gets swapped out in rendering
 document.querySelector('form').addEventListener('click', clickHandler, true);
-
-
-function updateDatabaseStats(el) {
-  getDatabaseStats()
-    .then(function(stats){
-      renderDatabaseStats(el, stats);
-    })
-    .catch(function(err){
-      console.error(err);
-    });
-}
-// updateDatabaseStats(document.querySelector('#database'));
 
 //})();
