@@ -81,9 +81,22 @@ function reducer(state, action) {
 		case 'COLLECTION_CLEAR_RECEIVE':
 			return state;
 			break;
+		case 'URI_POLICY_CHANGE':
+			// FIXME: This is ugly. Is there a way to do it without a temp variable?
+			var newState = Object.assign({}, state);
+			newState.uploadSettings.uri = action.uriPolicy;
+			return newState;
 		default:
 			console.warn('default state');
 			return state;
+	}
+}
+
+// Action creator
+function changeURIPolicy(uriPolicy) {
+	return {
+		type: 'URI_POLICY_CHANGE',
+		uriPolicy: uriPolicy
 	}
 }
 
@@ -428,5 +441,17 @@ function clickHandler(evt) {
 }
 // Would be good to attach to database#section, but that gets swapped out in rendering
 document.querySelector('form').addEventListener('click', clickHandler, true);
+
+function changeHandler(evt){
+	var target = evt.target;
+	switch (target.name) {
+		case 'uris':
+			store.dispatch(changeURIPolicy(target.value));
+			break;
+		default:
+			//
+	}
+}
+document.querySelector('form').addEventListener('change', changeHandler, true);
 
 //})();
