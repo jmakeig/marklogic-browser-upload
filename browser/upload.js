@@ -361,7 +361,7 @@ function renderDatabaseStats(el, db) {
         row.appendChild(td(coll.name));
         row.appendChild(td(coll.count, ['number']));
 				row.appendChild(td(
-					button('Clear', undefined, {name: 'collection-clear', value: coll.name}),
+					button('Clear', undefined, {name: 'collection-clear', value: (coll.isNone ? '********none' : coll.name)}),
 					'button'
 				));
       table.appendChild(row);
