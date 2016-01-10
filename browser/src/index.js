@@ -1,6 +1,20 @@
+'use strict'
+
 import 'number-to-locale-string';
-import {createStore} from 'redux';
-import {DATABASE_STATS_REFRESH} from './actions'
-createStore(() => 4);
-const num = 41234567890;
-console.log('Say, "%s" and %s', DATABASE_STATS_REFRESH, num.toLocaleString('en-us'));
+import {applyMiddleware, createStore} from 'redux';
+import thunk from 'redux-thunk';
+import {DATABASE_STATS_REFRESH} from './actions';
+import {reducer} from './reducers';
+
+const store = applyMiddleware(thunk)
+	(createStore) // middleware store creator
+		(reducer); // create the store
+
+// console.log(store.getState());
+store.subscribe(function() {
+	console.log(store.getState());
+	const state = store.getState();
+	// if(state.databaseStats) {
+	// 	renderDatabaseStats(document.querySelector('#database'), store.getState().databaseStats);
+	// }
+});
