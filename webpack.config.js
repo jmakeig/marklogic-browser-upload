@@ -9,6 +9,7 @@ const PATHS = {
 console.log(PATHS.app);
 
 module.exports = {
+  devtool: 'source-map',
   context: PATHS.app,
   entry: {
     //html: './index.html',

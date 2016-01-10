@@ -1,2 +1,2 @@
-bundle.js
-vendor.bundle.js
+bundle.js*
+vendor.bundle.js*
