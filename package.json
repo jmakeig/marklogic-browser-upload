@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --hot --inline --progress --colors --port 3000",
-    "build": "./node_modules/.bin/webpack --progress --colors",
-    "clean": "rm browser/bundle.js browser/bundle.js.map browser/vendor.bundle.js browser/vendor.bundle.js.map"
+    "build": "npm run-script clean; ./node_modules/.bin/webpack --progress --colors",
+    "clean": "rm browser/bundle.js browser/bundle.js.map browser/vendor.bundle.js browser/vendor.bundle.js.map 2>/dev/null; exit 0;"
   },
   "license": "Apache-2.0",
   "devDependencies": {
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.3.19",
+    "isomorphic-fetch": "2.2.0",
     "number-to-locale-string": "1.0.0",
     "redux": "^3.0.2",
     "redux-thunk": "1.0.3"

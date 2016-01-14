@@ -13,8 +13,12 @@ module.exports = {
   context: PATHS.app,
   entry: {
     //html: './index.html',
-    js: './src/index.js',
-    vendor: ['redux'] // List vendor libraries that will show up in vendor.bundle.js
+    js: './src/index.js' //,
+    // vendor: [ // List vendor libraries that will show up in vendor.bundle.js
+    //   "number-to-locale-string",
+    //   "redux",
+    //   "redux-thunk"
+    // ]
   },
   output: {
     path: PATHS.build,
@@ -39,8 +43,8 @@ module.exports = {
         include: PATHS.app
       }
     ],
-  },
-  plugins: [
-    new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"vendor.bundle.js")
-  ]
+  } //,
+  // plugins: [
+  //   new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"vendor.bundle.js")
+  // ]
 }
