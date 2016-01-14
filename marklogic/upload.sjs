@@ -99,7 +99,6 @@ function extractID(doc) {
  */
 function deriveURI(node, policy, filename) {
   var basename = filename;
-  // console.log(node);
   var kind = util.documentKind(node);
   switch (policy) {
     case 'filename':
@@ -118,12 +117,17 @@ function deriveURI(node, policy, filename) {
 
 var docCount = files.length;
 for(var i = 0; i < docCount; i++) {
-  console.log(files[i] instanceof BinaryNode)
   var node;
   if(files[i] instanceof BinaryNode || files[i] instanceof Text) {
     node = files[i];
   } else {
-    node = xdmp.unquote(files[i]).next().value; // Yikes! unquote always returns a ValueIterator.
+    var itr = xdmp.quote(files[i]);
+    if('function' === typeof itr.next) { // TODO: Is there a better way to detect the new (or old) interface?
+      // TODO: The ValueIterator interface changes from an Iterator to an Iterable in MarkLogic 9
+      node = xdmp.unquote(files[i]).next().value; // Yikes! unquote always returns a ValueIterator.
+    } else {
+      node = Array.from(xdmp.unquote(files[i]))[0]; // FIXME: This should use fn.head()
+    }
   }
   var uri = deriveURI(node, uris, fileNames[i]);
   console.log('Inserting ' + uri);

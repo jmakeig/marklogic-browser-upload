@@ -61,6 +61,16 @@ function documentKind(node) {
   }
 }
 
+function head(itr) {
+  if('function' === typeof itr.next) {
+    return itr.next().value;
+  } else if('function' === typeof itr[Symbol.iterator]) {
+    // FIXME: Update to fn.head when available.
+    return itr[Symbol.iterator]().next().value;
+  }
+  throw new TypeError(Object.prototype.toString().call(itr) + ' is not an Iterable or a ValueIterator');
+}
+
 module.exports.applyAs = applyAs;
 module.exports.uuid = uuid;
 module.exports.documentKind = documentKind;
