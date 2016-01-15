@@ -1,18 +1,6 @@
 'use strict'
 
 export function bindRenderUploadSettings(bindings) {
-  bindings = {
-    'uris': Array.from(document.querySelectorAll('input[name=uris]')),
-    'collections': {
-      'list': document.querySelector('table.collections > tbody'), // table
-      'defaults': document.querySelector('input[name=collection-defaults]'),
-      'batch': document.querySelector('input[name=collection-batch]')
-    },
-    'permissions': {
-      'list': document.querySelector('table.permissions > tbody'), // table
-      'defaults': document.querySelector('input[name=permission-defaults]')
-    }
-  }
   return function(options, locale) {
     /*
     <section>
