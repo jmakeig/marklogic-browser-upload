@@ -8,14 +8,14 @@ export const URI_POLICY_CHANGE = 'URI_POLICY_CHANGE';
 // Action creator
 function refreshDatabaseStats(id){
 	return {
-		type: 'DATABASE_STATS_REFRESH',
+		type: DATABASE_STATS_REFRESH,
 		id: id
 	}
 }
 
 function receiveDatabaseStats(id, stats) {
 	return {
-		type: 'DATABASE_STATS_RECEIVE',
+		type: DATABASE_STATS_RECEIVE,
 		id: id,
 		stats: stats
 	}
@@ -48,7 +48,7 @@ function getDatabaseStats(id) {
       resolve(JSON.parse(xhr.responseText));
     };
     xhr.onerror = function() {
-      reject(Error("Network Error"));
+      reject(Error('Network Error'));
     };
     xhr.send();
   });
@@ -57,7 +57,7 @@ function getDatabaseStats(id) {
 // Action creator
 function intendCollectionClear(collection) {
 	return {
-		type: 'COLLECTION_CLEAR_INTENT',
+		type: COLLECTION_CLEAR_INTENT,
 		collection: collection
 	}
 }
@@ -65,7 +65,7 @@ function intendCollectionClear(collection) {
 // Action creator
 function receiveCollectionCleared(collection) {
 	return {
-		type: 'COLLECTION_CLEAR_RECEIVE',
+		type: COLLECTION_CLEAR_RECEIVE,
 		collection: collection
 	}
 }
