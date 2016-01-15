@@ -75,9 +75,7 @@ export function bindRenderUploadSettings(bindings) {
     });
 
 
-    const collectionsEl = bindings.collections.list;
-    dom.clear(collectionsEl);
-
+    const collections = dom.clear(bindings.collections.list);
     options.collections.user
       .map(coll => tr([
         td(coll.name),
@@ -87,6 +85,6 @@ export function bindRenderUploadSettings(bindings) {
         )
       ])
       )
-      .forEach(row => collectionsEl.appendChild(row));
+      .forEach(row => collections.appendChild(row));
   }
 }
