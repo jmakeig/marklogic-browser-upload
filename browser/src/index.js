@@ -7,6 +7,7 @@ import {DATABASE_STATS_REFRESH} from './actions';
 import {fetchDatabaseStats} from './actions';
 import {reducer} from './reducers';
 import {renderDatabaseStats} from './components/databaseStats';
+import {bindRenderUploadSettings} from './components/uploadSettings';
 
 const store = applyMiddleware(thunk)
 	(createStore) // middleware store creator
@@ -18,6 +19,7 @@ store.subscribe(function() {
 	if(state.databaseStats) {
 		renderDatabaseStats(document.querySelector('#database'), store.getState().databaseStats);
 	}
+	bindRenderUploadSettings()(state.uploadSettings);
 });
 
 store.dispatch(fetchDatabaseStats(undefined));

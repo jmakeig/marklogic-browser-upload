@@ -1,44 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
+'use strict'
 
-<head>
-  <meta charset="utf-8">
-  <title>Drag and drop</title>
-  <link rel="stylesheet" href="upload.css" />
-</head>
-
-<body>
-  <form id="upload" method="POST" enctype="multipart/form-data">
-    <section id="database"><!--
-      <h2>Documents</h2>
-      <div>114,328 documents</div>
-      <div>1,187 properties</div>
-      <h3>Collections</h3>
-      <table>
-        <tr><td>staging</td><td class="number">89,995</td><td class="button"><button name="collection-staging-clear" value="clear">Clear…</button></td></tr>
-        <tr><td>production</td><td class="number">24,333</td><td class="button"><button name="collection-production-clear" value="clear">Clear…</button></td></tr>
-        <tr><td>batch-123</td><td class="number">100</td><td class="button"><button name="collection-batch-123-clear" value="clear">Clear…</button></td></tr>
-        <tr><td>batch-456</td><td class="number">87</td><td class="button"><button name="collection-batch-456-clear" value="clear">Clear…</button></td></tr>
-      </table>
-      <h3>Formats</h3>
-      <table>
-        <tr><td>json</td><td class="number">89,995</td></tr>
-        <tr><td>xml</td><td class="number">24,333</td></tr>
-        <tr><td>binary</td><td class="number">100</td></tr>
-        <tr><td>text</td><td class="number">87</td></tr>
-      </table>
-    --></section>
-    <section>
-      <h2>Upload Files</h2>
-      <div>
-        <progress id="progress" value="0">
-          <span>0</span>%
-        </progress>
-      </div>
-      <div id="filedrag">
-        <input type="file" id="fileselect" name="fileselect[]" multiple="multiple" />
-      </div>
-    </section>
+export function bindRenderUploadSettings(bindings) {
+  bindings = {
+    'uris': Array.from(document.querySelectorAll('input[name=uris]')),
+    'collections': {
+      'list': document.querySelector('table.collections > tbody'), // table
+      'defaults': document.querySelector('input[name=collection-defaults]'),
+      'batch': document.querySelector('input[name=collection-batch]')
+    },
+    'permissions': {
+      'list': document.querySelector('table.permissions > tbody'), // table
+      'defaults': document.querySelector('input[name=permission-defaults]')
+    }
+  }
+  return function(options, locale) {
+    /*
     <section>
       <h2>Settings</h2>
       <div>
@@ -51,10 +27,8 @@
         <h3>Collections</h3>
         <div>
           <table class="collections">
-            <tbody>
-              <tr><td>staging</td><td class="check"><input type="checkbox" name="collections" value="staging" checked="checked"/></td></tr>
-              <tr><td>production</td><td class="check"><input type="checkbox" name="collections" value="production" checked="checked"/></td></tr>
-            </tbody>
+            <tr><td>staging</td><td class="check"><input type="checkbox" name="collections" value="staging" checked="checked"/></td></tr>
+            <tr><td>production</td><td class="check"><input type="checkbox" name="collections" value="production" checked="checked"/></td></tr>
           </table>
           <div></div>
           <ul class="select-group">
@@ -90,8 +64,9 @@
         </div>
       </div>
     </section>
-  </form>
-</body>
-<!--<script src="./vendor.bundle.js"></script>-->
-<script src="./bundle.js"></script>
-</html>
+     */
+    bindings.uris.forEach(function(uri) {
+      if(uri.value === options.uri) { uri.checked = true; } else { uri.checked = false; }
+    });
+  }
+}

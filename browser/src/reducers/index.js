@@ -18,7 +18,7 @@ const initialState = {
 		fileList: null
 	},
 	uploadSettings: {
-		uri: 'filename', // id, uuid
+		uri: 'filename', // filename, id, uuid
 		collections: {
 			user: [
 					// {
