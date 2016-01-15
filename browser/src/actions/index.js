@@ -3,6 +3,7 @@ export const DATABASE_STATS_RECEIVE = 'DATABASE_STATS_RECEIVE';
 export const COLLECTION_CLEAR_INTENT = 'COLLECTION_CLEAR_INTENT';
 export const COLLECTION_CLEAR_RECEIVE = 'COLLECTION_CLEAR_RECEIVE';
 export const URI_POLICY_CHANGE = 'URI_POLICY_CHANGE';
+export const PERMISSION_CHANGE = 'PERMISSION_CHANGE';
 
 
 // Action creator
@@ -90,5 +91,13 @@ export function changeURIPolicy(uriPolicy) {
 	return {
 		type: URI_POLICY_CHANGE,
 		uriPolicy: uriPolicy
+	}
+}
+
+export function changePermission(role, capabilities) {
+	return {
+		type: PERMISSION_CHANGE,
+		role: role,
+		capabilities: capabilities
 	}
 }

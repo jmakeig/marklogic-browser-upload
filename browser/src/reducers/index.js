@@ -5,7 +5,8 @@ import {
 	DATABASE_STATS_RECEIVE,
 	COLLECTION_CLEAR_INTENT,
 	COLLECTION_CLEAR_RECEIVE,
-	URI_POLICY_CHANGE
+	URI_POLICY_CHANGE,
+	PERMISSION_CHANGE
 } from '../actions';
 
 const initialState = {
@@ -50,13 +51,14 @@ const initialState = {
 }
 
 export function reducer(state = initialState, action) {
+	let newState = Object.assign({}, state);
 	switch (action.type) {
 		case DATABASE_STATS_REFRESH:
-			return Object.assign({}, state, {isFetchingDatabaseStats: true});
+			return Object.assign(newState, state, {isFetchingDatabaseStats: true});
 			break;
 		case DATABASE_STATS_RECEIVE:
 			// console.dir(action);
-			return Object.assign({}, state, {isFetchingDatabaseStats: false, databaseStats: action.stats});
+			return Object.assign(newState, state, {isFetchingDatabaseStats: false, databaseStats: action.stats});
 			break;
 		case COLLECTION_CLEAR_INTENT: // TODO: Put spinner indicator for individual collection?
 		case COLLECTION_CLEAR_RECEIVE:
@@ -64,8 +66,10 @@ export function reducer(state = initialState, action) {
 			break;
 		case URI_POLICY_CHANGE:
 			// FIXME: This is ugly. Is there a way to do it without a temp variable?
-			var newState = Object.assign({}, state);
 			newState.uploadSettings.uri = action.uriPolicy;
+			return newState;
+		case PERMISSION_CHANGE:
+			newState.uploadSettings.permissions.user[action.role] = action.capabilities;
 			return newState;
 		default:
 			console.warn('default state');

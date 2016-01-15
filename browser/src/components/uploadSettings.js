@@ -95,6 +95,7 @@ export function bindRenderUploadSettings(bindings) {
     */
     const permissions = dom.clear(bindings.permissions.list);
     const capabilities = ['read', 'update', 'insert', 'execute'];
+
     Object.keys(options.permissions.user)
       .map(role => tr([
         td(role),
@@ -103,7 +104,7 @@ export function bindRenderUploadSettings(bindings) {
             checkbox(
               options.permissions.user[role].indexOf(cap) > -1,
               undefined,
-              {name: 'permission*' + role, value: cap}
+              {name: 'permission*' + role, value: cap, 'data-capabilities': JSON.stringify(options.permissions.user[role])}
             )
             , 'check'
           )

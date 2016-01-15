@@ -3,20 +3,35 @@
 // import 'number-to-locale-string';
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
-import {fetchDatabaseStats, changeURIPolicy} from './actions';
+import {fetchDatabaseStats, changeURIPolicy, changePermission} from './actions';
 import {reducer} from './reducers';
 import {bindRenderDatabaseStats} from './components/databaseStats';
 import {bindRenderUploadSettings} from './components/uploadSettings';
 
 
+const PERMISSION_NAMESPACE = 'permission*';
+
+// function escapeCSS(str) {
+// 	return str.replace(/(\*:)/g, (match, $1, offset, original) => '\\$1');
+// }
 function changeHandler(evt){
 	let target = evt.target;
+	console.log('Changed %s', target.name);
 	switch (target.name) {
 		case 'uris':
 			store.dispatch(changeURIPolicy(target.value));
 			break;
 		default:
-			//
+			if(target.name.startsWith(PERMISSION_NAMESPACE)) {
+				let role = target.name.slice(PERMISSION_NAMESPACE.length);
+				let capabilities = Array.from(
+						document.querySelectorAll('input[name=' + 'permission\\*' + role + ']') // Double escape: first for JavaScript then for CSS
+					)
+					.filter(el => el.checked)
+					.map(el => el.value);
+				// console.dir(permissions);
+				store.dispatch(changePermission(role, capabilities));
+			}
 	}
 }
 document.querySelector('form').addEventListener('change', changeHandler, true);
