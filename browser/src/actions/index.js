@@ -4,6 +4,7 @@ export const COLLECTION_CLEAR_INTENT = 'COLLECTION_CLEAR_INTENT';
 export const COLLECTION_CLEAR_RECEIVE = 'COLLECTION_CLEAR_RECEIVE';
 export const URI_POLICY_CHANGE = 'URI_POLICY_CHANGE';
 export const PERMISSION_CHANGE = 'PERMISSION_CHANGE';
+export const PERMISSION_DEFAULTS_CHANGE = 'PERMISSION_DEFAULTS_CHANGE';
 
 
 // Action creator
@@ -99,5 +100,12 @@ export function changePermission(role, capabilities) {
 		type: PERMISSION_CHANGE,
 		role: role,
 		capabilities: capabilities
+	}
+}
+
+export function changePermissionDefaults(enabled) {
+	return {
+		type: PERMISSION_DEFAULTS_CHANGE,
+		enabled: enabled
 	}
 }

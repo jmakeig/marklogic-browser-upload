@@ -6,7 +6,8 @@ import {
 	COLLECTION_CLEAR_INTENT,
 	COLLECTION_CLEAR_RECEIVE,
 	URI_POLICY_CHANGE,
-	PERMISSION_CHANGE
+	PERMISSION_CHANGE,
+	PERMISSION_DEFAULTS_CHANGE
 } from '../actions';
 
 const initialState = {
@@ -70,6 +71,9 @@ export function reducer(state = initialState, action) {
 			return newState;
 		case PERMISSION_CHANGE:
 			newState.uploadSettings.permissions.user[action.role] = action.capabilities;
+			return newState;
+		case PERMISSION_DEFAULTS_CHANGE:
+			newState.uploadSettings.permissions.default = action.enabled;
 			return newState;
 		default:
 			console.warn('default state');

@@ -3,7 +3,7 @@
 // import 'number-to-locale-string';
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
-import {fetchDatabaseStats, changeURIPolicy, changePermission} from './actions';
+import {fetchDatabaseStats, changeURIPolicy, changePermission, changePermissionDefaults} from './actions';
 import {reducer} from './reducers';
 import {bindRenderDatabaseStats} from './components/databaseStats';
 import {bindRenderUploadSettings} from './components/uploadSettings';
@@ -20,6 +20,9 @@ function changeHandler(evt){
 	switch (target.name) {
 		case 'uris':
 			store.dispatch(changeURIPolicy(target.value));
+			break;
+		case 'permission-defaults':
+			store.dispatch(changePermissionDefaults(target.checked));
 			break;
 		default:
 			if(target.name.startsWith(PERMISSION_NAMESPACE)) {
