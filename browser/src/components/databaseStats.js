@@ -1,4 +1,6 @@
-import {button, div, h1, h2, h3, p, span, td, tr} from '../dom.js';
+'use strict'
+import {button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../dom.js';
+import * as dom from '../dom.js';
 
 /**
  * Render database stats.
@@ -30,9 +32,8 @@ export function bindRenderDatabaseStats(el) {
     </table>
     */
 
-    var parent = el.parentNode;
 
-    var section = el.cloneNode(false);
+    const section = dom.clear(el);
     section.appendChild(h2(db.name));
     section.appendChild(div(db.documentsCount + ' documents'));
     section.appendChild(div(db.propertiesCount + ' properties'));
@@ -84,7 +85,5 @@ export function bindRenderDatabaseStats(el) {
     } else {
   		section.appendChild(div('none'));
   	}
-
-    parent.replaceChild(section, el);
   }
 }
