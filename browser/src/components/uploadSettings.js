@@ -111,5 +111,7 @@ export function bindRenderUploadSettings(bindings) {
       ])
       )
       .forEach(row => permissions.appendChild(row));
+
+    bindings.permissions.defaults.checked = options.permissions.default;
   }
 }
