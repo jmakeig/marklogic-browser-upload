@@ -42,7 +42,7 @@ const renderUploadSettings = bindRenderUploadSettings(
 	}
 );
 
-store.subscribe(function() {
+store.subscribe(() => {
 	console.log(store.getState());
 	const state = store.getState();
 	if(state.databaseStats) {
@@ -50,5 +50,36 @@ store.subscribe(function() {
 	}
 	renderUploadSettings(state.uploadSettings);
 });
+
+function observeStore(store, select, onChange) {
+  let currentState;
+
+  function handleChange() {
+		//console.log(((currentState || {})['uploadSettings'] || {}).uri);
+		console.log(currentState === store.getState());
+		try {
+			console.log(currentState.uploadSettings.uri == store.getState().uploadSettings.uri);
+		} catch (e) {
+			console.warn('oops');
+		}
+
+    let nextState = select(store.getState());
+    if (nextState !== currentState) {
+      currentState = nextState;
+      onChange(currentState);
+    }
+  }
+
+  let unsubscribe = store.subscribe(handleChange);
+  handleChange();
+  return unsubscribe;
+}
+
+observeStore(
+	store,
+	x => x,
+	//(prev, curr) => console.log('prev: %s, curr: %s', prev.uploadSettings.uri, curr.uploadSettings.uri)
+	x => x
+);
 
 store.dispatch(fetchDatabaseStats(undefined));

@@ -70,10 +70,7 @@ export function bindRenderUploadSettings(bindings) {
     </section>
      */
 
-    bindings.uris.forEach(function(uri) {
-      uri.checked = (uri.value === options.uri)
-    });
-
+    bindings.uris.forEach(uri => uri.checked = (uri.value === options.uri));
 
     const collections = dom.clear(bindings.collections.list);
     options.collections.user
@@ -86,5 +83,33 @@ export function bindRenderUploadSettings(bindings) {
       ])
       )
       .forEach(row => collections.appendChild(row));
+
+    /*
+      permissions: {
+  			user: {
+  				'some-role': ['read', 'update', 'insert', 'execute']
+  			},
+  			'default': true,
+  			cachedRoles: null // Pre-load the roles from the server for auto-suggest
+  		}
+    */
+    const permissions = dom.clear(bindings.permissions.list);
+    const capabilities = ['read', 'update', 'insert', 'execute'];
+    Object.keys(options.permissions.user)
+      .map(role => tr([
+        td(role),
+        ...capabilities.map(
+          cap => td(
+            checkbox(
+              options.permissions.user[role].indexOf(cap) > -1,
+              undefined,
+              {name: 'permission*' + role, value: cap}
+            )
+            , 'check'
+          )
+        )
+      ])
+      )
+      .forEach(row => permissions.appendChild(row));
   }
 }
