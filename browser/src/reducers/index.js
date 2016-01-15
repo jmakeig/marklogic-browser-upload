@@ -6,6 +6,7 @@ import {
 	COLLECTION_CLEAR_INTENT,
 	COLLECTION_CLEAR_RECEIVE,
 	URI_POLICY_CHANGE,
+	COLLECTION_DEFAULTS_CHANGE,
 	PERMISSION_CHANGE,
 	PERMISSION_DEFAULTS_CHANGE
 } from '../actions';
@@ -68,6 +69,9 @@ export function reducer(state = initialState, action) {
 		case URI_POLICY_CHANGE:
 			// FIXME: This is ugly. Is there a way to do it without a temp variable?
 			newState.uploadSettings.uri = action.uriPolicy;
+			return newState;
+		case COLLECTION_DEFAULTS_CHANGE:
+			newState.uploadSettings.collections.default = action.enabled;
 			return newState;
 		case PERMISSION_CHANGE:
 			newState.uploadSettings.permissions.user[action.role] = action.capabilities;
