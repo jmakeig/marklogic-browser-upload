@@ -21,10 +21,18 @@ const initialState = {
 		uri: 'filename', // filename, id, uuid
 		collections: {
 			user: [
-					// {
-					// 	name: '',
-					// 	enabled: true
-					// }
+					{
+						name: 'production',
+						enabled: true
+					},
+					{
+						name: 'staging',
+						enabled: true
+					},
+					{
+						name: '/some/other',
+						enabled: false
+					}
 			],
 			batch: true,
 			'default': true
