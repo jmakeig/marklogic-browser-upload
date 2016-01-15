@@ -85,3 +85,10 @@ export function clearCollection(collection) {
 			// TODO: .catch()
 	}
 }
+
+export function changeURIPolicy(uriPolicy) {
+	return {
+		type: URI_POLICY_CHANGE,
+		uriPolicy: uriPolicy
+	}
+}

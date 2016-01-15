@@ -1,6 +1,22 @@
 'use strict'
+import {button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../dom.js';
+import * as dom from '../dom.js';
 
 export function bindRenderUploadSettings(bindings) {
+  /*
+  {
+		'uris': Array.from(document.querySelectorAll('input[name=uris]')),
+		'collections': {
+			'list': document.querySelector('table.collections > tbody'), // table
+			'defaults': document.querySelector('input[name=collection-defaults]'),
+			'batch': document.querySelector('input[name=collection-batch]')
+		},
+		'permissions': {
+			'list': document.querySelector('table.permissions > tbody'), // table
+			'defaults': document.querySelector('input[name=permission-defaults]')
+		}
+	}
+  */
   return function(options, locale) {
     /*
     <section>
@@ -53,8 +69,24 @@ export function bindRenderUploadSettings(bindings) {
       </div>
     </section>
      */
+
     bindings.uris.forEach(function(uri) {
-      if(uri.value === options.uri) { uri.checked = true; } else { uri.checked = false; }
+      uri.checked = (uri.value === options.uri)
     });
+
+
+    const collectionsEl = bindings.collections.list;
+    dom.clear(collectionsEl);
+
+    options.collections.user
+      .map(coll => tr([
+        td(coll.name),
+        td(
+          checkbox(coll.enabled, undefined, {name: 'collections', value: coll.name}),
+          'check'
+        )
+      ])
+      )
+      .forEach(row => collectionsEl.appendChild(row));
   }
 }

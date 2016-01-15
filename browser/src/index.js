@@ -3,11 +3,24 @@
 // import 'number-to-locale-string';
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
-import {DATABASE_STATS_REFRESH} from './actions';
-import {fetchDatabaseStats} from './actions';
+import {fetchDatabaseStats, changeURIPolicy} from './actions';
 import {reducer} from './reducers';
 import {bindRenderDatabaseStats} from './components/databaseStats';
 import {bindRenderUploadSettings} from './components/uploadSettings';
+
+
+function changeHandler(evt){
+	var target = evt.target;
+	switch (target.name) {
+		case 'uris':
+			store.dispatch(changeURIPolicy(target.value));
+			break;
+		default:
+			//
+	}
+}
+document.querySelector('form').addEventListener('change', changeHandler, true);
+
 
 const store = applyMiddleware(thunk)
 	(createStore) // middleware store creator

@@ -9,6 +9,8 @@ function _el(localname, classList, attrs, contents, locale) {
   } else if('number' === typeof contents) {
     // console.warn('Using hard-coded locale.');
     elem.textContent = contents.toLocaleString(locale || DEFAULT_LOCALE); // FIXME: Get locale from model/store
+  } else if('input' === localname && ('checkbox' === attrs.type || 'radio' === attrs.type)) {
+    elem.checked = Boolean(contents);
   }
   else if(contents instanceof HTMLElement) {
     elem.appendChild(contents);
@@ -33,12 +35,20 @@ function _el(localname, classList, attrs, contents, locale) {
   return elem;
 }
 
-export function div   (t, c, a, l) {return _el('div',    c, a, t, l);}
-export function h1    (t, c, a, l) {return _el('h1',     c, a, t, l);}
-export function h2    (t, c, a, l) {return _el('h2',     c, a, t, l);}
-export function h3    (t, c, a, l) {return _el('h3',     c, a, t, l);}
-export function tr    (t, c, a, l) {return _el('tr',     c, a, t, l);}
-export function td    (t, c, a, l) {return _el('td',     c, a, t, l);}
-export function button(t, c, a, l) {return _el('button', c, a, t, l);}
-export function span  (t, c, a, l) {return _el('span',   c, a, t, l);}
-export function p     (t, c, a, l) {return _el('p',      c, a, t, l);}
+export function div     (t, c, a, l) {return _el('div',    c, a, t, l);}
+export function h1      (t, c, a, l) {return _el('h1',     c, a, t, l);}
+export function h2      (t, c, a, l) {return _el('h2',     c, a, t, l);}
+export function h3      (t, c, a, l) {return _el('h3',     c, a, t, l);}
+export function tr      (t, c, a, l) {return _el('tr',     c, a, t, l);}
+export function td      (t, c, a, l) {return _el('td',     c, a, t, l);}
+export function button  (t, c, a, l) {return _el('button', c, a, t, l);}
+export function span    (t, c, a, l) {return _el('span',   c, a, t, l);}
+export function p       (t, c, a, l) {return _el('p',      c, a, t, l);}
+export function checkbox(t, c, a, l) {return _el('input',  c, Object.assign(a || {}, {type: 'checkbox'}), t, l);}
+
+export function clear(el) {
+  if(el.hasChildNodes) {
+    while(el.hasChildNodes()) { el.removeChild(el.lastChild); }
+  }
+  return el;
+}
