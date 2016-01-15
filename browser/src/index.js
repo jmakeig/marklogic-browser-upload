@@ -49,19 +49,19 @@ const renderUploadSettings = bindRenderUploadSettings(
 	{
 		'uris': Array.from(document.querySelectorAll('input[name=uris]')),
 		'collections': {
-			'list': document.querySelector('table.collections > tbody'), // table
+			'list': document.querySelector('table.collections > tbody'),
 			'defaults': document.querySelector('input[name=collection-defaults]'),
 			'batch': document.querySelector('input[name=collection-batch]')
 		},
 		'permissions': {
-			'list': document.querySelector('table.permissions > tbody'), // table
+			'list': document.querySelector('table.permissions > tbody'),
 			'defaults': document.querySelector('input[name=permission-defaults]')
 		}
 	}
 );
 
 store.subscribe(() => {
-	// console.log(store.getState());
+	console.dir(store.getState());
 	const state = store.getState();
 	if(state.databaseStats) {
 		renderDatabaseStats(store.getState().databaseStats);
