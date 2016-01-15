@@ -58,7 +58,7 @@ const renderUploadSettings = bindRenderUploadSettings(
 );
 
 store.subscribe(() => {
-	console.log(store.getState());
+	// console.log(store.getState());
 	const state = store.getState();
 	if(state.databaseStats) {
 		renderDatabaseStats(store.getState().databaseStats);
@@ -66,6 +66,7 @@ store.subscribe(() => {
 	renderUploadSettings(state.uploadSettings);
 });
 
+/*
 function observeStore(store, select, onChange) {
   let currentState;
 
@@ -96,5 +97,6 @@ observeStore(
 	//(prev, curr) => console.log('prev: %s, curr: %s', prev.uploadSettings.uri, curr.uploadSettings.uri)
 	x => x
 );
+*/
 
 store.dispatch(fetchDatabaseStats(undefined));
