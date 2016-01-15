@@ -10,7 +10,7 @@ import {bindRenderUploadSettings} from './components/uploadSettings';
 
 
 function changeHandler(evt){
-	var target = evt.target;
+	let target = evt.target;
 	switch (target.name) {
 		case 'uris':
 			store.dispatch(changeURIPolicy(target.value));

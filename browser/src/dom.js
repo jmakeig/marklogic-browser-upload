@@ -3,7 +3,7 @@
 const DEFAULT_LOCALE = 'en-US';
 
 function _el(localname, classList, attrs, contents, locale) {
-  var elem = document.createElement(localname || 'div');
+  let elem = document.createElement(localname || 'div');
   if('string' === typeof contents) {
     elem.textContent = contents;
   } else if('number' === typeof contents) {

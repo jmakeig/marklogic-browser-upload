@@ -32,16 +32,16 @@ export function bindRenderDatabaseStats(el) {
     </table>
     */
 
-
+    // TODO: Rewrite with dom.js
     const section = dom.clear(el);
     section.appendChild(h2(db.name));
     section.appendChild(div(db.documentsCount + ' documents'));
     section.appendChild(div(db.propertiesCount + ' properties'));
 
     section.appendChild(h3('Document Formats'));
-    var table = document.createElement('table');
+    let table = document.createElement('table');
     db.documentFormats.forEach(function(coll){
-      var row = document.createElement('tr');
+      let row = document.createElement('tr');
         row.appendChild(td(coll.format));
         row.appendChild(td(coll.count, ['number']));
   			row.appendChild(td(
@@ -53,10 +53,10 @@ export function bindRenderDatabaseStats(el) {
     section.appendChild(table);
 
     section.appendChild(h3('Collections'));
-    var table = document.createElement('table');
+    table = document.createElement('table'); // FIXME: Confusing reuse of table variable
     if(Array.isArray(db.collections)) {
       db.collections.forEach(function(coll){
-        var row = document.createElement('tr');
+        let row = document.createElement('tr');
           row.appendChild(td(coll.name));
           row.appendChild(td(coll.count, ['number']));
   				row.appendChild(td(
@@ -70,9 +70,9 @@ export function bindRenderDatabaseStats(el) {
 
     section.appendChild(h3('Batches'));
     if(Array.isArray(db.batches) && db.batches.length > 0) {
-  		var table = document.createElement('table');
+  		let table = document.createElement('table');
       db.batches.forEach(function(coll){
-        var row = document.createElement('tr');
+        let row = document.createElement('tr');
           row.appendChild(td(coll.name));
           row.appendChild(td(coll.count, ['number']));
   				row.appendChild(td(
