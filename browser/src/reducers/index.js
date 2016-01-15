@@ -7,6 +7,7 @@ import {
 	COLLECTION_CLEAR_RECEIVE,
 	URI_POLICY_CHANGE,
 	COLLECTION_DEFAULTS_CHANGE,
+	COLLECTION_BATCH_CHANGE,
 	PERMISSION_CHANGE,
 	PERMISSION_DEFAULTS_CHANGE
 } from '../actions';
@@ -72,6 +73,9 @@ export function reducer(state = initialState, action) {
 			return newState;
 		case COLLECTION_DEFAULTS_CHANGE:
 			newState.uploadSettings.collections.default = action.enabled;
+			return newState;
+		case COLLECTION_BATCH_CHANGE:
+			newState.uploadSettings.collections.batch = action.enabled;
 			return newState;
 		case PERMISSION_CHANGE:
 			newState.uploadSettings.permissions.user[action.role] = action.capabilities;

@@ -6,7 +6,7 @@ export const URI_POLICY_CHANGE = 'URI_POLICY_CHANGE';
 export const PERMISSION_CHANGE = 'PERMISSION_CHANGE';
 export const PERMISSION_DEFAULTS_CHANGE = 'PERMISSION_DEFAULTS_CHANGE';
 export const COLLECTION_DEFAULTS_CHANGE = 'COLLECTION_DEFAULTS_CHANGE';
-
+export const COLLECTION_BATCH_CHANGE = 'COLLECTION_BATCH_CHANGE';
 
 // Action creator
 function refreshDatabaseStats(id){
@@ -99,6 +99,13 @@ export function changeURIPolicy(uriPolicy) {
 export function changeCollectionDefaults(enabled) {
 	return {
 		type: COLLECTION_DEFAULTS_CHANGE,
+		enabled: enabled
+	}
+}
+
+export function changeCollectionBatch(enabled) {
+	return {
+		type: COLLECTION_BATCH_CHANGE,
 		enabled: enabled
 	}
 }

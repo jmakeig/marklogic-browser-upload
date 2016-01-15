@@ -3,7 +3,14 @@
 // import 'number-to-locale-string';
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
-import {fetchDatabaseStats, changeURIPolicy, changePermission, changePermissionDefaults, changeCollectionDefaults} from './actions';
+import {
+	fetchDatabaseStats,
+	changeURIPolicy,
+	changePermission,
+	changePermissionDefaults,
+	changeCollectionDefaults,
+	changeCollectionBatch
+} from './actions';
 import {reducer} from './reducers';
 import {bindRenderDatabaseStats} from './components/databaseStats';
 import {bindRenderUploadSettings} from './components/uploadSettings';
@@ -26,6 +33,9 @@ function changeHandler(evt){
 			break;
 		case 'permission-defaults':
 			store.dispatch(changePermissionDefaults(target.checked));
+			break;
+		case 'collection-batch':
+			store.dispatch(changeCollectionBatch(target.checked));
 			break;
 		default:
 			if(target.name.startsWith(PERMISSION_NAMESPACE)) {
