@@ -11,7 +11,8 @@ import {
 	changeCollectionEnabled,
 	changeCollectionDefaults,
 	changeCollectionBatch,
-	specifiedFiles
+	specifiedFiles,
+	uploadFiles
 } from './actions';
 import {reducer} from './reducers';
 import {bindRenderDatabaseStats} from './components/databaseStats';
@@ -94,6 +95,10 @@ store.subscribe(() => {
 	if(state.uploadSettings) {
 		renderUploadSettings(state.uploadSettings);
 	}
+
+	if(state.files.uploadProgress) {
+		document.querySelector('progress#progress').value = state.files.uploadProgress; 
+	}
 });
 
 /*
@@ -129,20 +134,19 @@ observeStore(
 );
 */
 
-
-function fileSelectHandler(evt) {
-  let files = evt.target.files; // FileList
-  //sendFiles(files);
-}
-document.querySelector('#fileselect').addEventListener('change', fileSelectHandler, false);
-
 function dropHandler(evt) {
 	evt.preventDefault();
 	evt.stopPropagation();
   // console.dir(evt.target);
   if(this === evt.target) {
-    //sendFiles(evt.dataTransfer.files);
-    store.dispatch(specifiedFiles(evt.dataTransfer.files));
+    const files = evt.dataTransfer.files;
+    store.dispatch(specifiedFiles(files));
+		const data = new FormData(document.getElementById('upload'));
+	  for (let i = 0, f; f = files[i]; i++) {
+	    console.log('Adding file %s', f);
+	    data.append('files', f);
+	  }
+		store.dispatch(uploadFiles(data));
   }
 }
 document.querySelector('#filedrag').addEventListener('drop', dropHandler);

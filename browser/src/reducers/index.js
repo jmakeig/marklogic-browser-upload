@@ -11,7 +11,9 @@ import {
 	COLLECTION_BATCH_CHANGE,
 	PERMISSION_CHANGE,
 	PERMISSION_DEFAULTS_CHANGE,
-	FILES_SPECIFY
+	FILES_SPECIFY,
+	FILES_UPLOAD_INTENT,
+	FILES_UPLOAD_RECEIVE
 } from '../actions';
 
 const initialState = {
@@ -100,6 +102,14 @@ export function reducer(state = initialState, action) {
 			return newState;
 		case FILES_SPECIFY:
 			newState.files.fileList = action.files;
+			return newState;
+		case FILES_UPLOAD_INTENT:
+			newState.files.uploadProgress = action.progress;
+			console.info('Progress %d%%', action.progress * 100);
+			return newState;
+		case FILES_UPLOAD_RECEIVE:
+			newState.files.uploadProgress = 1;
+			newState.files.fileList = null;
 			return newState;
 		default:
 			console.warn('default state');

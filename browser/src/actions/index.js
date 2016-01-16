@@ -9,6 +9,9 @@ export const COLLECTION_ENABLED_CHANGE = 'COLLECTION_CHANGE_ENABLED';
 export const COLLECTION_DEFAULTS_CHANGE = 'COLLECTION_ENABLED_CHANGE';
 export const COLLECTION_BATCH_CHANGE = 'COLLECTION_BATCH_CHANGE';
 export const FILES_SPECIFY = 'FILES_SPECIFY';
+export const FILES_UPLOAD_INTENT = 'FILES_UPLOAD_INTENT';
+export const FILES_UPLOAD_RECEIVE = 'FILES_UPLOAD_RECEIVE';
+export const FILES_UPLOAD_ERROR = 'FILES_UPLOAD_ERROR';
 
 // Action creator
 function refreshDatabaseStats(id){
@@ -140,4 +143,66 @@ export function specifiedFiles(files) {
 		type: FILES_SPECIFY,
 		files: files
 	}
+}
+
+// TODO: Should I pass in FormData (easy) or recreate basically the same thing
+// from the store state (hard and requires back-end work)?
+export function uploadFiles(formData) {
+	return function(dispatch, getState) {
+		dispatch(intendUploadFiles());
+		return doUploadFiles(formData, (progress) => dispatch(intendUploadFiles(progress)))
+			.then(function(ack) {
+				console.log('Uploaded files');
+				dispatch(receivedUploadFiles(ack))
+			})
+			.catch(function(error){
+				console.error(error);
+				dispatch(errorUploadFiles(error));
+			});
+	}
+}
+
+function intendUploadFiles(progress = 0.0) {
+	return {
+		type: FILES_UPLOAD_INTENT,
+		progress: progress
+	}
+}
+
+function receivedUploadFiles(ack) {
+	return {
+		type: FILES_UPLOAD_RECEIVE
+	}
+}
+
+function errorUploadFiles(error) {
+	return {
+		type: FILES_UPLOAD_ERROR,
+		error: error
+	}
+}
+
+/**
+ *
+ * @param  {[type]} handler [description]
+ * @return {Promise}
+ */
+function doUploadFiles(data, progressHandler) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/marklogic/upload.sjs');
+    xhr.onload = function() {
+      // TODO: Check status code and reject accordingly
+      resolve(JSON.parse(xhr.responseText));
+    };
+    xhr.onerror = function() {
+      reject(Error('Network Error'));
+    };
+		xhr.upload.onprogress = function(event) {
+			if(event.lengthComputable) {
+	      progressHandler(event.loaded / event.total);
+	    }
+		};
+    xhr.send(data);
+  });
 }
