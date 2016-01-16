@@ -8,6 +8,7 @@ export const PERMISSION_DEFAULTS_CHANGE = 'PERMISSION_DEFAULTS_CHANGE';
 export const COLLECTION_ENABLED_CHANGE = 'COLLECTION_CHANGE_ENABLED';
 export const COLLECTION_DEFAULTS_CHANGE = 'COLLECTION_ENABLED_CHANGE';
 export const COLLECTION_BATCH_CHANGE = 'COLLECTION_BATCH_CHANGE';
+export const FILES_SPECIFY = 'FILES_SPECIFY';
 
 // Action creator
 function refreshDatabaseStats(id){
@@ -131,5 +132,12 @@ export function changePermissionDefaults(enabled) {
 	return {
 		type: PERMISSION_DEFAULTS_CHANGE,
 		enabled: enabled
+	}
+}
+
+export function specifiedFiles(files) {
+	return {
+		type: FILES_SPECIFY,
+		files: files
 	}
 }

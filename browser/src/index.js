@@ -10,7 +10,8 @@ import {
 	changePermissionDefaults,
 	changeCollectionEnabled,
 	changeCollectionDefaults,
-	changeCollectionBatch
+	changeCollectionBatch,
+	specifiedFiles
 } from './actions';
 import {reducer} from './reducers';
 import {bindRenderDatabaseStats} from './components/databaseStats';
@@ -127,5 +128,33 @@ observeStore(
 	x => x
 );
 */
+
+
+function fileSelectHandler(evt) {
+  let files = evt.target.files; // FileList
+  //sendFiles(files);
+}
+document.querySelector('#fileselect').addEventListener('change', fileSelectHandler, false);
+
+function dropHandler(evt) {
+	evt.preventDefault();
+	evt.stopPropagation();
+  // console.dir(evt.target);
+  if(this === evt.target) {
+    //sendFiles(evt.dataTransfer.files);
+    store.dispatch(specifiedFiles(evt.dataTransfer.files));
+  }
+}
+document.querySelector('#filedrag').addEventListener('drop', dropHandler);
+
+function dragHover(evt) {
+  evt.stopPropagation();
+	evt.preventDefault();
+}
+document.querySelector('#filedrag').addEventListener('dragover', dragHover, false);
+document.querySelector('#filedrag').addEventListener('dragleave', dragHover, false);
+
+
+
 
 store.dispatch(fetchDatabaseStats(undefined));

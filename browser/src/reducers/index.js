@@ -10,7 +10,8 @@ import {
 	COLLECTION_DEFAULTS_CHANGE,
 	COLLECTION_BATCH_CHANGE,
 	PERMISSION_CHANGE,
-	PERMISSION_DEFAULTS_CHANGE
+	PERMISSION_DEFAULTS_CHANGE,
+	FILES_SPECIFY
 } from '../actions';
 
 const initialState = {
@@ -96,6 +97,9 @@ export function reducer(state = initialState, action) {
 			return newState;
 		case PERMISSION_DEFAULTS_CHANGE:
 			newState.uploadSettings.permissions.default = action.enabled;
+			return newState;
+		case FILES_SPECIFY:
+			newState.files.fileList = action.files;
 			return newState;
 		default:
 			console.warn('default state');
