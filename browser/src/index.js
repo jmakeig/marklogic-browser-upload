@@ -83,7 +83,9 @@ store.subscribe(() => {
 	if(state.databaseStats) {
 		renderDatabaseStats(store.getState().databaseStats);
 	}
-	renderUploadSettings(state.uploadSettings);
+	if(state.uploadSettings) {
+		renderUploadSettings(state.uploadSettings);
+	}
 });
 
 /*
