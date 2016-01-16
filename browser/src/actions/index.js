@@ -5,7 +5,8 @@ export const COLLECTION_CLEAR_RECEIVE = 'COLLECTION_CLEAR_RECEIVE';
 export const URI_POLICY_CHANGE = 'URI_POLICY_CHANGE';
 export const PERMISSION_CHANGE = 'PERMISSION_CHANGE';
 export const PERMISSION_DEFAULTS_CHANGE = 'PERMISSION_DEFAULTS_CHANGE';
-export const COLLECTION_DEFAULTS_CHANGE = 'COLLECTION_DEFAULTS_CHANGE';
+export const COLLECTION_ENABLED_CHANGE = 'COLLECTION_CHANGE_ENABLED';
+export const COLLECTION_DEFAULTS_CHANGE = 'COLLECTION_ENABLED_CHANGE';
 export const COLLECTION_BATCH_CHANGE = 'COLLECTION_BATCH_CHANGE';
 
 // Action creator
@@ -93,6 +94,14 @@ export function changeURIPolicy(uriPolicy) {
 	return {
 		type: URI_POLICY_CHANGE,
 		uriPolicy: uriPolicy
+	}
+}
+
+export function changeCollectionEnabled(collection, enabled) {
+	return {
+		type: COLLECTION_ENABLED_CHANGE,
+		collection: collection,
+		enabled: enabled
 	}
 }
 

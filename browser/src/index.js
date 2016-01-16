@@ -8,6 +8,7 @@ import {
 	changeURIPolicy,
 	changePermission,
 	changePermissionDefaults,
+	changeCollectionEnabled,
 	changeCollectionDefaults,
 	changeCollectionBatch
 } from './actions';
@@ -27,6 +28,9 @@ function changeHandler(evt){
 	switch (target.name) {
 		case 'uris':
 			store.dispatch(changeURIPolicy(target.value));
+			break;
+		case 'collections':
+			store.dispatch(changeCollectionEnabled(target.value, target.checked));
 			break;
 		case 'collection-defaults':
 			store.dispatch(changeCollectionDefaults(target.checked));
