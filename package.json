@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "Proof of concept of drag-n-drop file uploads for MarkLogic’s Query Console",
   "main": "index.js",
-  "repository": "https://github.com/jmakeig/marklogic-browser-upload",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jmakeig/marklogic-browser-upload"
+  },
   "scripts": {
     "test": "./node_modules/.bin/babel-tape-runner browser/test/*.js | ./node_modules/.bin/tap-notify | ./node_modules/.bin/tap-diff",
     "start": "webpack-dev-server --hot --inline --progress --colors --port 3000",
