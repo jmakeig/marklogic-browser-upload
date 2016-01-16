@@ -55,6 +55,13 @@ function changeHandler(evt){
 	}
 }
 document.querySelector('form').addEventListener('change', changeHandler, true);
+function submitHandler(evt) {
+	// TODO: The issue is that buttons automatically submit the form. Should
+	// the preventDefault be in the button logic or the form?
+	console.info('Captured submit event');
+	evt.preventDefault();
+}
+document.querySelector('form').addEventListener('submit', submitHandler, true);
 
 
 const store = applyMiddleware(thunk)

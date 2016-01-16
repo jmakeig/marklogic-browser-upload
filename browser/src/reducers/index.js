@@ -74,14 +74,15 @@ export function reducer(state = initialState, action) {
 			return newState;
 		case COLLECTION_ENABLED_CHANGE:
 			// FIXME: This is ugly. Isn't there a better way to do this?
+			// Find the collection and change its `enabled` property.
 			newState.uploadSettings.collections.user =
 				newState.uploadSettings.collections.user.map(
-					function(c) {
-						if(action.collection === c.name) {
-							c.enabled = action.enabled;
-							return c;
+					function(coll) {
+						if(action.collection === coll.name) {
+							coll.enabled = action.enabled;
+							return coll;
 						}
-						return c;
+						return coll;
 					}
 				);
 		case COLLECTION_DEFAULTS_CHANGE:
