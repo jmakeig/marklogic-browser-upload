@@ -1,3 +1,12 @@
+/*
+  A template for asynchronous action creator lifcycle.
+  Use the `generate-actions.sh` script to create an instance.
+
+  cat template.js | ./generate-actions.sh > my-actions.js
+  
+ */
+
+'use strict'
 
 const $NOUN_$VERB_INTENT  = '$NOUN_$VERB_INTENT';
 const $NOUN_$VERB_RECEIPT = '$NOUN_$VERB_RECEIPT';
