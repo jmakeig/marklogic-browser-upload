@@ -35,8 +35,8 @@ export function bindRenderDatabaseStats(el) {
     // TODO: Rewrite with dom.js
     const section = dom.clear(el);
     section.appendChild(h2(db.name));
-    section.appendChild(div(db.documentsCount + ' documents'));
-    section.appendChild(div(db.propertiesCount + ' properties'));
+    section.appendChild(div(db.documentsCount.toLocaleString() + ' documents'));
+    section.appendChild(div(db.propertiesCount.toLocaleString() + ' properties'));
 
     section.appendChild(h3('Document Formats'));
     let table = document.createElement('table');
