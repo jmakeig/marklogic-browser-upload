@@ -3,14 +3,10 @@ declareUpdate();
 
 var  util = require('../util');
 
-if('DELETE' === xdmp.getRequestMethod()) {
-  var db = xdmp.getRequestField('db', xdmp.database().toString());
-  var collection = xdmp.getRequestField('coll');
-
-  var collectionDelete = util.applyAs(xdmp.collectionDelete, {database: db, transactionMode: 'update-auto-commit'});
+function deleteByCollectionOrFormat(collection, format) {
   if(collection) {
     if('********none' !== collection) {
-      collectionDelete(collection);
+      xdmp.collectionDelete(collection);
     } else {
       console.log('Collection: %s', collection);
       var uris = cts.uris(
@@ -22,9 +18,25 @@ if('DELETE' === xdmp.getRequestMethod()) {
         xdmp.documentDelete(uri);
       }
     }
+    return {collection: collection};
+  } else if(format) {
+    var itr = cts.search(cts.trueQuery(), ['format-' + format]);
+    for(var doc of itr) {
+      xdmp.documentDelete(fn.documentUri(doc));
+    }
+    return {format: format};
   }
+}
+
+if('DELETE' === xdmp.getRequestMethod()) {
+  var db = xdmp.getRequestField('db', xdmp.database().toString());
+  var collection = xdmp.getRequestField('coll');
+  var format = xdmp.getRequestField('format');
+
+  var deleteDocs = util.applyAs(deleteByCollectionOrFormat, {database: db, transactionMode: 'update-auto-commit'});
+
   xdmp.addResponseHeader('Content-Type', 'application/json;charset=utf-8');
-  ({collections: [collection]});
+  deleteDocs(collection, format);
 } else {
   xdmp.setResponseCode(405, 'Method not supported');
 }
