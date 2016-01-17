@@ -370,3 +370,128 @@ function errorGetRoles(error) {
     error: error
   }
 }
+
+/*
+  A template for asynchronous action creator lifcycle.
+  Use the `generate-actions.sh` script to create an instance.
+
+  cat template.js | ./generate-actions.sh > my-actions.js
+
+ */
+
+'use strict'
+
+/* Clear format *****************************************************/
+
+/*
+
+0. Paste below into where your actions live
+
+1. Import action constants into the reducer and add to the switch statement
+
+  import {
+    FORMAT_CLEAR_INTENT,
+    FORMAT_CLEAR_RECEIPT,
+    FORMAT_CLEAR_ERROR,
+  } from '../actions'
+
+2. Import clearFormat into the UI component
+
+ */
+
+export const FORMAT_CLEAR_INTENT  = 'FORMAT_CLEAR_INTENT';
+export const FORMAT_CLEAR_RECEIPT = 'FORMAT_CLEAR_RECEIPT';
+export const FORMAT_CLEAR_ERROR   = 'FORMAT_CLEAR_ERROR';
+
+/**
+ * The top-level asynchronous action creator.
+ * Dispatches intent, receipt, and error lifecycle events.
+ * @param  {string} format One of `'json'`, `'xml'`, `'binary'`, `'text'`
+ * @return {function} The thunk
+ */
+export function clearFormat(format) {
+	return function(dispatch, getState) {
+		dispatch(intendClearFormat());
+		return doClearFormat(format)
+			.then(function(receipt) {
+				console.log('Clear format');
+				dispatch(receivedClearFormat(receipt));
+			})
+      .then(() => dispatch(fetchDatabaseStats(undefined)))
+			.catch(function(error){
+				console.error(error);
+				dispatch(errorClearFormat(error));
+			});
+	}
+}
+
+/**
+ * Perform the actual asynchronous work. There shouldn't be anything
+ * action-specific in here, just business logic.
+ * @param  {string} format One of `'json'`, `'xml'`, `'binary'`, `'text'`
+ * @return {Promise}
+ */
+function doClearFormat(format) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/marklogic/endpoints/documents.sjs?format=' + format);
+    xhr.onload = function() {
+      if(this.status < 300) {
+        resolve(JSON.parse(this.responseText));
+      } else if (this.status >= 300) {
+        let error = new Error(this.responseText);
+        error.httpStatus = this.statusText;
+        error.httpCode = this.status;
+        reject(error);
+      }
+    };
+    xhr.onerror = function() {
+      // TODO: Get error messsage
+      reject(new Error('Network Error'));
+    };
+    xhr.send();
+  });
+}
+
+/**
+ * Synchronous action declaring the intent to clear a format. Use this action
+ * to indicate progress on completing the task as well, for example from a file
+ * upload XHR request.
+ * @param  {string} format One of `'json'`, `'xml'`, `'binary'`, `'text'`
+ * @param  {number} progress = 0.0 An optional progress indicator from 0 to 1.0
+ * @return {Object} The intent action
+ */
+function intendClearFormat(format, progress = 0.0) {
+  return {
+    type: FORMAT_CLEAR_INTENT,
+    format: format,
+    progress: progress
+  }
+}
+
+/**
+ * Synchronous action dispatched from the asynchronous `clearFormat` indicating
+ * that the remote service has successfully returned data.
+ * @param  {Object} receipt The data returned from the service
+ * @return {Object} The receipt action
+ */
+function receivedClearFormat(receipt) {
+  return {
+    type: FORMAT_CLEAR_RECEIPT,
+    receipt: receipt
+  }
+}
+
+/**
+ * Synchronous action dispatched from the asynchronous `clearFormat` indicating
+ * that the remote service wasn’t able to complete because of an error.
+ * @param  {Error} error An `Error` instance with custom properties
+ *                        indicating specifics of the failure
+ * @return {Object} The action
+ */
+function errorClearFormat(error) {
+  return {
+    type: FORMAT_CLEAR_ERROR,
+    error: error
+  }
+}

@@ -18,6 +18,9 @@ import {
 	ROLES_GET_INTENT,
 	ROLES_GET_RECEIPT,
 	ROLES_GET_ERROR,
+	FORMAT_CLEAR_INTENT,
+	FORMAT_CLEAR_RECEIPT,
+	FORMAT_CLEAR_ERROR
 } from '../actions';
 
 const initialState = {
@@ -71,6 +74,11 @@ export function reducer(state = initialState, action) {
 		case DATABASE_STATS_RECEIVE:
 			// console.dir(action);
 			return Object.assign(newState, state, {isFetchingDatabaseStats: false, databaseStats: action.stats});
+			break;
+		case FORMAT_CLEAR_INTENT:
+		case FORMAT_CLEAR_RECEIPT:
+		case FORMAT_CLEAR_ERROR:
+			return Object.assign(newState, {databaseStats: null}); // Clear stats to indicate that we need a refresh
 			break;
 		case COLLECTION_CLEAR_INTENT:
 		case COLLECTION_CLEAR_RECEIPT:

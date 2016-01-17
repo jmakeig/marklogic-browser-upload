@@ -5,6 +5,7 @@ import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
 import {
 	fetchDatabaseStats,
+	clearFormat,
 	clearCollection,
 	changeURIPolicy,
 	changePermission,
@@ -75,6 +76,9 @@ function clickHandler(evt) {
 			switch (target.name) {
 				case 'collection-clear':
 					store.dispatch(clearCollection(target.value));
+					break;
+				case 'format-clear':
+					store.dispatch(clearFormat(target.value));
 					break;
 				case 'permission-add':
 					store.dispatch(getRoles());
