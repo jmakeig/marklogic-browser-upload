@@ -22,7 +22,7 @@ export function $verb$Noun(data) {
 	return function(dispatch, getState) {
 		dispatch(intend$Verb$Noun());
 		return do$Verb$Noun(data)
-			.then(function(ack) {
+			.then(function(receipt) {
 				console.log('$Verb $Noun');
 				dispatch(received$Verb$Noun(receipt));
 			})
@@ -68,7 +68,7 @@ function do$Verb$Noun(data) {
 function intend$Verb$Noun(progress = 0.0) {
   return {
     type: $NOUN_$VERB_INTENT,
-    progress = progress
+    progress: progress
   }
 }
 
