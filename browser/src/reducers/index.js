@@ -4,7 +4,8 @@ import {
 	DATABASE_STATS_REFRESH,
 	DATABASE_STATS_RECEIVE,
 	COLLECTION_CLEAR_INTENT,
-	COLLECTION_CLEAR_RECEIVE,
+	COLLECTION_CLEAR_RECEIPT,
+	COLLECTION_CLEAR_ERROR,
 	URI_POLICY_CHANGE,
 	COLLECTION_ENABLED_CHANGE,
 	COLLECTION_DEFAULTS_CHANGE,
@@ -67,8 +68,9 @@ export function reducer(state = initialState, action) {
 			// console.dir(action);
 			return Object.assign(newState, state, {isFetchingDatabaseStats: false, databaseStats: action.stats});
 			break;
-		case COLLECTION_CLEAR_INTENT: // TODO: Put spinner indicator for individual collection?
-		case COLLECTION_CLEAR_RECEIVE:
+		case COLLECTION_CLEAR_INTENT:
+		case COLLECTION_CLEAR_RECEIPT:
+		case COLLECTION_CLEAR_ERROR:
 			return state;
 			break;
 		case URI_POLICY_CHANGE:

@@ -1,7 +1,5 @@
 export const DATABASE_STATS_REFRESH = 'DATABASE_STATS_REFRESH';
 export const DATABASE_STATS_RECEIVE = 'DATABASE_STATS_RECEIVE';
-export const COLLECTION_CLEAR_INTENT = 'COLLECTION_CLEAR_INTENT';
-export const COLLECTION_CLEAR_RECEIVE = 'COLLECTION_CLEAR_RECEIVE';
 export const URI_POLICY_CHANGE = 'URI_POLICY_CHANGE';
 export const PERMISSION_CHANGE = 'PERMISSION_CHANGE';
 export const PERMISSION_DEFAULTS_CHANGE = 'PERMISSION_DEFAULTS_CHANGE';
@@ -60,38 +58,6 @@ function getDatabaseStats(id) {
     };
     xhr.send();
   });
-}
-
-// Action creator
-function intendCollectionClear(collection) {
-	return {
-		type: COLLECTION_CLEAR_INTENT,
-		collection: collection
-	}
-}
-
-// Action creator
-function receiveCollectionCleared(collection) {
-	return {
-		type: COLLECTION_CLEAR_RECEIVE,
-		collection: collection
-	}
-}
-
-// Thunk action creator
-export function clearCollection(collection) {
-	return function(dispatch) {
-		dispatch(intendCollectionClear(collection));
-
-		return deleteCollection(collection)
-			.then(function(coll) { // FIXME: This returns { collections: […]}, not a string
-				dispatch(receiveCollectionCleared(coll))
-			})
-			.then(function() {
-				dispatch(fetchDatabaseStats(undefined)); // FIXME: How do I chain actions?
-			});
-			// TODO: .catch()
-	}
 }
 
 export function changeURIPolicy(uriPolicy) {
@@ -205,4 +171,104 @@ function doUploadFiles(data, progressHandler) {
 		};
     xhr.send(data);
   });
+}
+
+/* Collection clear ***********************************************************/
+
+const COLLECTION_CLEAR_INTENT  = 'COLLECTION_CLEAR_INTENT';
+const COLLECTION_CLEAR_RECEIPT = 'COLLECTION_CLEAR_RECEIPT';
+const COLLECTION_CLEAR_ERROR   = 'COLLECTION_CLEAR_ERROR';
+
+/**
+ * Ansynchronously clear a collection. Clearning a collection removes all of
+ * the documents associated with that collection, even documents that
+ * are in other collections.
+ * Dispatches intent, receipt, and error lifecycle events.
+ * @param  {string} collection The collection URI
+ * @return {function} The thunk
+ */
+export function clearCollection(collection) {
+	return function(dispatch, getState) {
+		dispatch(intendClearCollection());
+		return doClearCollection(collection)
+			.then(function(receipt) {
+				console.log('Clear Collection');
+				dispatch(receivedClearCollection(receipt));
+			})
+			// FIXME: This is really ugly, having to tightly couple the clear
+			// collection and refresh database stats.
+			.then(() => dispatch(fetchDatabaseStats(undefined)))
+			.catch(function(error){
+				console.error(error);
+				dispatch(errorClearCollection(error));
+			});
+	}
+}
+
+/**
+ * Perform the actual asynchronous work.
+ * @param  {string} collection The collection URI
+ * @return {Promise}
+ */
+function doClearCollection(collection) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/marklogic/endpoints/documents.sjs?coll=' + collection);
+    xhr.onload = function() {
+      if(this.status < 300) {
+        resolve(JSON.parse(this.responseText));
+      } else if (this.status >= 300) {
+        let error = new Error(this.responseText);
+        error.httpStatus = this.statusText;
+        error.httpCode = this.status;
+        reject(error);
+      }
+    };
+    xhr.onerror = function() {
+      // TODO: Get error messsage
+      reject(new Error('Network Error'));
+    };
+    xhr.send();
+  });
+}
+
+/**
+ * Synchronous action declaring the intent to clear a collection.
+ * @param  {string} collection The collection URI
+ * @param  {number} progress = 0.0 The amount of progress, from 0 to 1.0
+ * @return {Object} The intent action
+ */
+function intendClearCollection(collection, progress = 0.0) {
+  return {
+    type: COLLECTION_CLEAR_INTENT,
+		collection: collection,
+    progress: progress
+  }
+}
+
+/**
+ * Synchronous action dispatched from the asynchronous `clearCollection` indicating
+ * that the remote service has successfully returned data.
+ * @param  {Object} receipt The data returned from the service
+ * @return {Object} The action
+ */
+function receivedClearCollection(receipt) {
+  return {
+    type: COLLECTION_CLEAR_RECEIPT,
+    receipt: receipt
+  }
+}
+
+/**
+ * Synchronous action dispatched from the asynchronous `clearCollection` indicating
+ * that the remote service wasn’t able to complete because of an error.
+ * @param  {Object} error An `Error` instance with custom properties
+ *                        indicating specifics of the failure
+ * @return {Object} The action
+ */
+function errorClearCollection(error) {
+  return {
+    type: COLLECTION_CLEAR_ERROR,
+    error: error
+  }
 }

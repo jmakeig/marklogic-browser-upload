@@ -5,6 +5,7 @@ import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
 import {
 	fetchDatabaseStats,
+	clearCollection,
 	changeURIPolicy,
 	changePermission,
 	changePermissionDefaults,
@@ -26,7 +27,7 @@ const PERMISSION_NAMESPACE = 'permission*';
 // }
 function changeHandler(evt){
 	let target = evt.target;
-	console.log('Changed %s', target.name);
+	console.info('Changed %s', target.name);
 	switch (target.name) {
 		case 'uris':
 			store.dispatch(changeURIPolicy(target.value));
@@ -65,6 +66,21 @@ function submitHandler(evt) {
 }
 document.querySelector('form').addEventListener('submit', submitHandler, true);
 
+function clickHandler(evt) {
+	console.info('Clicked %s', evt.target.name);
+	const target = evt.target;
+	switch(target.nodeName.toLowerCase()) {
+		case 'button':
+			if('collection-clear' === target.name) {
+				store.dispatch(clearCollection(target.value));
+			}
+			break;
+		default:
+
+	}
+}
+document.querySelector('form').addEventListener('click', clickHandler, true);
+
 
 const store = applyMiddleware(thunk)
 	(createStore) // middleware store creator
@@ -97,7 +113,7 @@ store.subscribe(() => {
 	}
 
 	if(state.files.uploadProgress) {
-		document.querySelector('progress#progress').value = state.files.uploadProgress; 
+		document.querySelector('progress#progress').value = state.files.uploadProgress;
 	}
 });
 
