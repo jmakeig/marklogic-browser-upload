@@ -8,9 +8,27 @@
 
 'use strict'
 
-const $NOUN_$VERB_INTENT  = '$NOUN_$VERB_INTENT';
-const $NOUN_$VERB_RECEIPT = '$NOUN_$VERB_RECEIPT';
-const $NOUN_$VERB_ERROR   = '$NOUN_$VERB_ERROR';
+/* $Verb $noun *****************************************************/
+
+/*
+
+0. Paste below into where your actions live
+
+1. Import action constants into the reducer and add to the switch statement
+
+  import {
+    $NOUN_$VERB_INTENT,
+    $NOUN_$VERB_RECEIPT,
+    $NOUN_$VERB_ERROR,
+  } from '../actions'
+
+2. Import $verb$Noun into the UI component
+
+ */
+
+export const $NOUN_$VERB_INTENT  = '$NOUN_$VERB_INTENT';
+export const $NOUN_$VERB_RECEIPT = '$NOUN_$VERB_RECEIPT';
+export const $NOUN_$VERB_ERROR   = '$NOUN_$VERB_ERROR';
 
 /**
  * The top-level asynchronous action creator.
@@ -23,7 +41,7 @@ export function $verb$Noun(data) {
 		dispatch(intend$Verb$Noun());
 		return do$Verb$Noun(data)
 			.then(function(receipt) {
-				console.log('$Verb $Noun');
+				console.log('$Verb $noun');
 				dispatch(received$Verb$Noun(receipt));
 			})
       // .then( Dispatch subsequent actions here. )
