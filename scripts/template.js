@@ -84,7 +84,7 @@ function do$Verb$Noun(data /* FIXME: Make this specific */) {
  * Synchronous action declaring the intent to $verb a $noun. Use this action
  * to indicate progress on completing the task as well, for example from a file
  * upload XHR request.
- * @param  {number} progress = 0.0 [description]
+ * @param  {number} progress = 0.0 An optional progress indicator from 0 to 1.0
  * @return {Object} The intent action
  */
 function intend$Verb$Noun(progress = 0.0) {
