@@ -178,9 +178,9 @@ function doUploadFiles(data, progressHandler) {
 
 /* Collection clear ***********************************************************/
 
-const COLLECTION_CLEAR_INTENT  = 'COLLECTION_CLEAR_INTENT';
-const COLLECTION_CLEAR_RECEIPT = 'COLLECTION_CLEAR_RECEIPT';
-const COLLECTION_CLEAR_ERROR   = 'COLLECTION_CLEAR_ERROR';
+export const COLLECTION_CLEAR_INTENT  = 'COLLECTION_CLEAR_INTENT';
+export const COLLECTION_CLEAR_RECEIPT = 'COLLECTION_CLEAR_RECEIPT';
+export const COLLECTION_CLEAR_ERROR   = 'COLLECTION_CLEAR_ERROR';
 
 /**
  * Ansynchronously clear a collection. Clearning a collection removes all of
