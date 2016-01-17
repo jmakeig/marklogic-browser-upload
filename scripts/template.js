@@ -3,7 +3,7 @@
   Use the `generate-actions.sh` script to create an instance.
 
   cat template.js | ./generate-actions.sh > my-actions.js
-  
+
  */
 
 'use strict'
@@ -26,6 +26,7 @@ export function $verb$Noun(data) {
 				console.log('$Verb $Noun');
 				dispatch(received$Verb$Noun(receipt));
 			})
+      // .then( Dispatch subsequent actions here. )
 			.catch(function(error){
 				console.error(error);
 				dispatch(error$Verb$Noun(error));
@@ -34,11 +35,12 @@ export function $verb$Noun(data) {
 }
 
 /**
- * Perform the actual asynchronous work.
- * @param  {Object} data
+ * Perform the actual asynchronous work. There shouldn't be anything
+ * action-specific in here, just business logic.
+ * @param  {Object} data FIXME: Make this specific
  * @return {Promise}
  */
-function do$Verb$Noun(data) {
+function do$Verb$Noun(data /* FIXME: Make this specific */) {
   return new Promise(function(resolve, reject) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/$noun');
@@ -56,14 +58,16 @@ function do$Verb$Noun(data) {
       // TODO: Get error messsage
       reject(new Error('Network Error'));
     };
-    xhr.send(data);
+    xhr.send(data /* FIXME: Make this specific */);
   });
 }
 
 /**
- * Synchronous action declaring the intent to $verb $noun.
+ * Synchronous action declaring the intent to $verb a $noun. Use this action
+ * to indicate progress on completing the task as well, for example from a file
+ * upload XHR request.
  * @param  {number} progress = 0.0 [description]
- * @return {Object} The action
+ * @return {Object} The intent action
  */
 function intend$Verb$Noun(progress = 0.0) {
   return {
@@ -76,7 +80,7 @@ function intend$Verb$Noun(progress = 0.0) {
  * Synchronous action dispatched from the asynchronous `$verb$Noun` indicating
  * that the remote service has successfully returned data.
  * @param  {Object} receipt The data returned from the service
- * @return {Object} The action
+ * @return {Object} The receipt action
  */
 function received$Verb$Noun(receipt) {
   return {
