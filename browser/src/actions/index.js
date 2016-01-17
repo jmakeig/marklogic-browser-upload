@@ -275,3 +275,98 @@ function errorClearCollection(error) {
     error: error
   }
 }
+
+/* Get roles *****************************************************************/
+
+export const ROLES_GET_INTENT  = 'ROLES_GET_INTENT';
+export const ROLES_GET_RECEIPT = 'ROLES_GET_RECEIPT';
+export const ROLES_GET_ERROR   = 'ROLES_GET_ERROR';
+
+/**
+ * The top-level asynchronous action creator.
+ * Dispatches intent, receipt, and error lifecycle events.
+ * @return {function} The thunk
+ */
+export function getRoles() {
+	return function(dispatch, getState) {
+		dispatch(intendGetRoles());
+		return doGetRoles()
+			.then(function(roles) {
+				console.dir(roles);
+				dispatch(receivedGetRoles(roles));
+			})
+      // .then( Dispatch subsequent actions here. )
+			.catch(function(error){
+				console.error(error);
+				dispatch(errorGetRoles(error));
+			});
+	}
+}
+
+/**
+ * Perform the actual asynchronous work. There shouldn't be anything
+ * action-specific in here, just business logic.
+ * @return {Promise}
+ */
+function doGetRoles() {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/marklogic/endpoints/roles.sjs');
+    xhr.onload = function() {
+      if(this.status < 300) {
+        resolve(JSON.parse(this.responseText));
+      } else if (this.status >= 300) {
+        let error = new Error(this.responseText);
+        error.httpStatus = this.statusText;
+        error.httpCode = this.status;
+        reject(error);
+      }
+    };
+    xhr.onerror = function() {
+      // TODO: Get error messsage
+      reject(new Error('Network Error'));
+    };
+    xhr.send();
+  });
+}
+
+/**
+ * Synchronous action declaring the intent to get a roles. Use this action
+ * to indicate progress on completing the task as well, for example from a file
+ * upload XHR request.
+ * @param  {number} progress = 0.0 [description]
+ * @return {Object} The intent action
+ */
+function intendGetRoles(progress = 0.0) {
+  return {
+    type: ROLES_GET_INTENT,
+    progress: progress
+  }
+}
+
+/**
+ * Synchronous action dispatched from the asynchronous `getRoles` indicating
+ * that the remote service has successfully returned data.
+ * @param  {Object} receipt The data returned from the service
+ * @return {Object} The receipt action
+ */
+function receivedGetRoles(roles) {
+  return {
+    type: ROLES_GET_RECEIPT,
+    roles: roles
+  }
+}
+
+/**
+ * Synchronous action dispatched from the asynchronous `getRoles` indicating
+ * that the remote service wasn’t able to complete because of an error.
+ * @param  {Object} error An `Error` instance with custom properties
+ *                        indicating specifics of the failure
+ * @return {Object} The action
+ */
+function errorGetRoles(error) {
+  return {
+    type: ROLES_GET_ERROR,
+    error: error
+  }
+}

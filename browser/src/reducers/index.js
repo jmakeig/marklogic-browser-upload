@@ -14,7 +14,10 @@ import {
 	PERMISSION_DEFAULTS_CHANGE,
 	FILES_SPECIFY,
 	FILES_UPLOAD_INTENT,
-	FILES_UPLOAD_RECEIVE
+	FILES_UPLOAD_RECEIVE,
+	ROLES_GET_INTENT,
+	ROLES_GET_RECEIPT,
+	ROLES_GET_ERROR,
 } from '../actions';
 
 const initialState = {
@@ -59,6 +62,7 @@ const initialState = {
 }
 
 export function reducer(state = initialState, action) {
+	console.info('%s: %s', action.type, Object.keys(action).filter(k => 'type' !== k).join(', '));
 	let newState = Object.assign({}, state);
 	switch (action.type) {
 		case DATABASE_STATS_REFRESH:
@@ -112,6 +116,11 @@ export function reducer(state = initialState, action) {
 		case FILES_UPLOAD_RECEIVE:
 			newState.files.uploadProgress = 1;
 			newState.files.fileList = null;
+			return newState;
+		// case ROLES_GET_INTENT:
+		// case ROLES_GET_ERROR:
+		case ROLES_GET_RECEIPT:
+			newState.uploadSettings.permissions.cachedRoles = action.roles;
 			return newState;
 		default:
 			console.warn('default state');

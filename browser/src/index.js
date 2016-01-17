@@ -13,7 +13,8 @@ import {
 	changeCollectionDefaults,
 	changeCollectionBatch,
 	specifiedFiles,
-	uploadFiles
+	uploadFiles,
+	getRoles
 } from './actions';
 import {reducer} from './reducers';
 import {bindRenderDatabaseStats} from './components/databaseStats';
@@ -71,8 +72,15 @@ function clickHandler(evt) {
 	const target = evt.target;
 	switch(target.nodeName.toLowerCase()) {
 		case 'button':
-			if('collection-clear' === target.name) {
-				store.dispatch(clearCollection(target.value));
+			switch (target.name) {
+				case 'collection-clear':
+					store.dispatch(clearCollection(target.value));
+					break;
+				case 'permission-add':
+					store.dispatch(getRoles());
+					break;
+				default:
+
 			}
 			break;
 		default:
