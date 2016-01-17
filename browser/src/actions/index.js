@@ -121,6 +121,9 @@ export function uploadFiles(formData) {
 				console.log('Uploaded files');
 				dispatch(receivedUploadFiles(ack))
 			})
+			// FIXME: This is really ugly, having to tightly couple the clear
+			// collection and refresh database stats.
+			.then(() => dispatch(fetchDatabaseStats(undefined)))
 			.catch(function(error){
 				console.error(error);
 				dispatch(errorUploadFiles(error));
