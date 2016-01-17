@@ -110,7 +110,7 @@ function received$Verb$Noun(receipt) {
 /**
  * Synchronous action dispatched from the asynchronous `$verb$Noun` indicating
  * that the remote service wasn’t able to complete because of an error.
- * @param  {Object} error An `Error` instance with custom properties
+ * @param  {Error} error An `Error` instance with custom properties
  *                        indicating specifics of the failure
  * @return {Object} The action
  */
