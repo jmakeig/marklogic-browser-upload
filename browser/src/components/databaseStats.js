@@ -1,5 +1,5 @@
 'use strict'
-import {button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../dom.js';
+import {a, button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../dom.js';
 import * as dom from '../dom.js';
 
 /**
@@ -42,7 +42,10 @@ export function bindRenderDatabaseStats(el) {
     let table = document.createElement('table');
     db.documentFormats.forEach(function(coll){
       let row = document.createElement('tr');
-        row.appendChild(td(coll.format));
+        row.appendChild(td(
+          // a(coll.format, undefined, {href: '/marklogic/endpoints/documents.sjs?format=' + coll.format})
+          coll.format
+        ));
         row.appendChild(td(coll.count, ['number']));
   			row.appendChild(td(
   				button('Clear', undefined, {name: 'format-clear', value: coll.format}),

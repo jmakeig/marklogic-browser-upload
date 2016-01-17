@@ -39,6 +39,7 @@ export function div     (t, c, a, l) {return _el('div',    c, a, t, l);}
 export function h1      (t, c, a, l) {return _el('h1',     c, a, t, l);}
 export function h2      (t, c, a, l) {return _el('h2',     c, a, t, l);}
 export function h3      (t, c, a, l) {return _el('h3',     c, a, t, l);}
+export function a       (t, c, a, l) {return _el('a',      c, a, t, l);}
 export function tr      (t, c, a, l) {return _el('tr',     c, a, t, l);}
 export function td      (t, c, a, l) {return _el('td',     c, a, t, l);}
 export function button  (t, c, a, l) {return _el('button', c, a, t, l);}
