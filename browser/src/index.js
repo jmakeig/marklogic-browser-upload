@@ -4,7 +4,7 @@
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
 import {
-	fetchDatabaseStats,
+	refreshDatabaseStats,
 	clearFormat,
 	clearCollection,
 	changeURIPolicy,
@@ -186,7 +186,4 @@ function dragHover(evt) {
 document.querySelector('#filedrag').addEventListener('dragover', dragHover, false);
 document.querySelector('#filedrag').addEventListener('dragleave', dragHover, false);
 
-
-
-
-store.dispatch(fetchDatabaseStats(undefined));
+store.dispatch(refreshDatabaseStats(store.getState().databaseID));

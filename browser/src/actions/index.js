@@ -1,5 +1,3 @@
-export const DATABASE_STATS_REFRESH = 'DATABASE_STATS_REFRESH';
-export const DATABASE_STATS_RECEIVE = 'DATABASE_STATS_RECEIVE';
 export const URI_POLICY_CHANGE = 'URI_POLICY_CHANGE';
 export const PERMISSION_CHANGE = 'PERMISSION_CHANGE';
 export const PERMISSION_DEFAULTS_CHANGE = 'PERMISSION_DEFAULTS_CHANGE';
@@ -11,54 +9,136 @@ export const FILES_UPLOAD_INTENT = 'FILES_UPLOAD_INTENT';
 export const FILES_UPLOAD_RECEIVE = 'FILES_UPLOAD_RECEIVE';
 export const FILES_UPLOAD_ERROR = 'FILES_UPLOAD_ERROR';
 
-// Action creator
-function refreshDatabaseStats(id){
-	return {
-		type: DATABASE_STATS_REFRESH,
-		id: id
-	}
-}
 
-function receiveDatabaseStats(id, stats) {
-	return {
-		type: DATABASE_STATS_RECEIVE,
-		id: id,
-		stats: stats
-	}
-}
+/*
+  A template for asynchronous action creator lifcycle.
+  Use the `generate-actions.sh` script to create an instance.
 
-// Thunk action creator
-export function fetchDatabaseStats(id) {
-	return function(dispatch) {
-		dispatch(refreshDatabaseStats(id));
+  cat template.js | ./generate-actions.sh > my-actions.js
 
-		return getDatabaseStats(id)
-			.then(function(stats) {
-				dispatch(receiveDatabaseStats(id, stats))
+ */
+
+'use strict'
+
+/* Refresh databaseStats *****************************************************/
+
+/*
+
+0. Paste below into where your actions live
+
+1. Import action constants into the reducer and add to the switch statement
+
+  import {
+    DATABASESTATS_REFRESH_INTENT,
+    DATABASESTATS_REFRESH_RECEIPT,
+    DATABASESTATS_REFRESH_ERROR,
+  } from '../actions'
+
+2. Import refreshDatabaseStats into the UI component
+
+ */
+
+export const DATABASESTATS_REFRESH_INTENT  = 'DATABASESTATS_REFRESH_INTENT';
+export const DATABASESTATS_REFRESH_RECEIPT = 'DATABASESTATS_REFRESH_RECEIPT';
+export const DATABASESTATS_REFRESH_ERROR   = 'DATABASESTATS_REFRESH_ERROR';
+
+/**
+ * The top-level asynchronous action creator.
+ * Dispatches intent, receipt, and error lifecycle events.
+ * @param  {string} id The input sent to the remote request
+ * @return {function} The thunk
+ */
+export function refreshDatabaseStats(id) {
+	return function(dispatch, getState) {
+		dispatch(intendRefreshDatabaseStats(id));
+		return doRefreshDatabaseStats(id)
+			.then(function(receipt) {
+				console.log('Refresh databaseStats');
+				dispatch(receivedRefreshDatabaseStats(receipt));
+			})
+      // .then( Dispatch subsequent actions here. )
+			.catch(function(error){
+				console.error(error);
+				dispatch(errorRefreshDatabaseStats(error));
 			});
-			// TODO: .catch()
 	}
 }
 
 /**
- *
- * @param  {[type]} handler [description]
+ * Perform the actual asynchronous work. There shouldn't be anything
+ * action-specific in here, just business logic.
+ * @param  {Object} data FIXME: Make this specific
  * @return {Promise}
  */
-function getDatabaseStats(id) {
+function doRefreshDatabaseStats(id) {
   return new Promise(function(resolve, reject) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/marklogic/endpoints/database.sjs');
+    xhr.open('GET', `/marklogic/endpoints/database.sjs?id=${id}`);
     xhr.onload = function() {
-      // TODO: Check status code and reject accordingly
-      resolve(JSON.parse(xhr.responseText));
+      if(this.status < 300) {
+        resolve(JSON.parse(this.responseText));
+      } else if (this.status >= 300) {
+        let error = new Error(this.responseText);
+        error.httpStatus = this.statusText;
+        error.httpCode = this.status;
+        reject(error);
+      }
     };
-    xhr.onerror = function() {
-      reject(Error('Network Error'));
+    xhr.ontimeout =
+		xhr.onabort =
+		xhr.error = function(evt) {
+			console.error(evt);
+      // TODO: Get error messsage
+      reject(new Error('Network Error'));
     };
     xhr.send();
   });
 }
+
+/**
+ * Synchronous action declaring the intent to refresh a databaseStats. Use this action
+ * to indicate progress on completing the task as well, for example from a file
+ * upload XHR request.
+ * @param  {number} progress = 0.0 An optional progress indicator from 0 to 1.0
+ * @return {Object} The intent action
+ */
+function intendRefreshDatabaseStats(id, progress = 0.0) {
+  return {
+    type: DATABASESTATS_REFRESH_INTENT,
+		id: id,
+    progress: progress
+  }
+}
+
+/**
+ * Synchronous action dispatched from the asynchronous `refreshDatabaseStats` indicating
+ * that the remote service has successfully returned data.
+ * @param  {Object} receipt The data returned from the service
+ * @return {Object} The receipt action
+ */
+function receivedRefreshDatabaseStats(stats) {
+  return {
+    type: DATABASESTATS_REFRESH_RECEIPT,
+    stats: stats
+  }
+}
+
+/**
+ * Synchronous action dispatched from the asynchronous `refreshDatabaseStats` indicating
+ * that the remote service wasn’t able to complete because of an error.
+ * @param  {Error} error An `Error` instance with custom properties
+ *                        indicating specifics of the failure
+ * @return {Object} The action
+ */
+function errorRefreshDatabaseStats(error) {
+  return {
+    type: DATABASESTATS_REFRESH_ERROR,
+    error: error
+  }
+}
+
+
+/*********************/
 
 export function changeURIPolicy(uriPolicy) {
 	return {
@@ -123,7 +203,7 @@ export function uploadFiles(formData) {
 			})
 			// FIXME: This is really ugly, having to tightly couple the clear
 			// collection and refresh database stats.
-			.then(() => dispatch(fetchDatabaseStats(undefined)))
+			.then(() => dispatch(refreshDatabaseStats(getState().databaseID)))
 			.catch(function(error){
 				console.error(error);
 				dispatch(errorUploadFiles(error));
@@ -200,7 +280,7 @@ export function clearCollection(collection) {
 			})
 			// FIXME: This is really ugly, having to tightly couple the clear
 			// collection and refresh database stats.
-			.then(() => dispatch(fetchDatabaseStats(undefined)))
+			.then(() => dispatch(doRefreshDatabaseStats(getState().databaseID)))
 			.catch(function(error){
 				console.error(error);
 				dispatch(errorClearCollection(error));
@@ -418,7 +498,7 @@ export function clearFormat(format) {
 				console.log('Clear format');
 				dispatch(receivedClearFormat(receipt));
 			})
-      .then(() => dispatch(fetchDatabaseStats(undefined)))
+      .then(() => dispatch(doRefreshDatabaseStats(getState().databaseID)))
 			.catch(function(error){
 				console.error(error);
 				dispatch(errorClearFormat(error));

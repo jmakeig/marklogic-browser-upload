@@ -1,8 +1,9 @@
 'use strict'
 
 import {
-	DATABASE_STATS_REFRESH,
-	DATABASE_STATS_RECEIVE,
+	DATABASESTATS_REFRESH_INTENT,
+	DATABASESTATS_REFRESH_RECEIPT,
+	DATABASESTATS_REFRESH_ERROR,
 	COLLECTION_CLEAR_INTENT,
 	COLLECTION_CLEAR_RECEIPT,
 	COLLECTION_CLEAR_ERROR,
@@ -68,13 +69,15 @@ export function reducer(state = initialState, action) {
 	console.info('%s: %s', action.type, Object.keys(action).filter(k => 'type' !== k).join(', '));
 	let newState = Object.assign({}, state);
 	switch (action.type) {
-		case DATABASE_STATS_REFRESH:
+		case DATABASESTATS_REFRESH_INTENT:
 			return Object.assign(newState, state, {isFetchingDatabaseStats: true});
 			break;
-		case DATABASE_STATS_RECEIVE:
+		case DATABASESTATS_REFRESH_RECEIPT:
 			// console.dir(action);
 			return Object.assign(newState, state, {isFetchingDatabaseStats: false, databaseStats: action.stats});
 			break;
+		case DATABASESTATS_REFRESH_ERROR:
+			return state; // TODO
 		case FORMAT_CLEAR_INTENT:
 		case FORMAT_CLEAR_RECEIPT:
 		case FORMAT_CLEAR_ERROR:
