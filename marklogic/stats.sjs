@@ -64,14 +64,15 @@ function databaseStats(id, collectionSort, batchSort, formatSort) {
       format: format,
       count: cts.estimate(cts.trueQuery(), ['format-' + format, 'document'])
     }
-  }).sort(function(a, b) {
-    if('ascending' === formatSort.direction) {
-      return a.count > b.count;
-    }
-    // descending
-    return a.count < b.count;
-
-  });
+  })
+  // .sort(function(a, b) {
+  //   if('ascending' === formatSort.direction) {
+  //     return a.count > b.count;
+  //   }
+  //   // descending
+  //   return a.count < b.count;
+  //
+  // });
   return db;
 }
 
