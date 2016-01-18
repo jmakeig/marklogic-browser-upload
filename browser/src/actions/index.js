@@ -410,9 +410,10 @@ export const FORMAT_CLEAR_ERROR   = 'FORMAT_CLEAR_ERROR';
  * @return {function} The thunk
  */
 export function clearFormat(format) {
+  console.log('Clearing format %s', format);
 	return function(dispatch, getState) {
 		dispatch(intendClearFormat());
-		return doClearFormat(format)
+		return doClearFormat(format, getState().databaseID)
 			.then(function(receipt) {
 				console.log('Clear format');
 				dispatch(receivedClearFormat(receipt));
@@ -431,10 +432,10 @@ export function clearFormat(format) {
  * @param  {string} format One of `'json'`, `'xml'`, `'binary'`, `'text'`
  * @return {Promise}
  */
-function doClearFormat(format) {
+function doClearFormat(format, dbID) {
   return new Promise(function(resolve, reject) {
     var xhr = new XMLHttpRequest();
-    xhr.open('DELETE', '/marklogic/endpoints/documents.sjs?format=' + format);
+    xhr.open('DELETE', `/marklogic/endpoints/documents.sjs?db=${dbID}&format=${format}`);
     xhr.onload = function() {
       if(this.status < 300) {
         resolve(JSON.parse(this.responseText));
