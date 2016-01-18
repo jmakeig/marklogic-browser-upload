@@ -72,7 +72,9 @@ function do$Verb$Noun(data /* FIXME: Make this specific */) {
         reject(error);
       }
     };
-    xhr.onerror = function() {
+    xhr.ontimeout =
+		xhr.onabort =
+		xhr.error = function(evt) {
       // TODO: Get error messsage
       reject(new Error('Network Error'));
     };
