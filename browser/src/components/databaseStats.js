@@ -1,6 +1,6 @@
 'use strict'
-import {a, button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../dom.js';
-import * as dom from '../dom.js';
+import {a, button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../util/dom.js';
+import * as dom from '../util/dom.js';
 
 const L10N = {
   clearDatabase: {

@@ -1,6 +1,6 @@
 'use strict'
-import {button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../dom.js';
-import * as dom from '../dom.js';
+import {button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../util/dom.js';
+import * as dom from '../util/dom.js';
 
 export function bindRenderUploadSettings(bindings) {
   /*
