@@ -280,7 +280,7 @@ export function clearCollection(collection) {
 			})
 			// FIXME: This is really ugly, having to tightly couple the clear
 			// collection and refresh database stats.
-			.then(() => dispatch(doRefreshDatabaseStats(getState().databaseID)))
+			.then(() => dispatch(refreshDatabaseStats(getState().databaseID)))
 			.catch(function(error){
 				console.error(error);
 				dispatch(errorClearCollection(error));
@@ -498,7 +498,7 @@ export function clearFormat(format) {
 				console.log('Clear format');
 				dispatch(receivedClearFormat(receipt));
 			})
-      .then(() => dispatch(doRefreshDatabaseStats(getState().databaseID)))
+      .then(() => dispatch(refreshDatabaseStats(getState().databaseID)))
 			.catch(function(error){
 				console.error(error);
 				dispatch(errorClearFormat(error));
