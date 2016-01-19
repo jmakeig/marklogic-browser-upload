@@ -74,7 +74,7 @@ function calculatePermissions(permissions, defaults) {
 // FIXME: This is brittle
 // TODO: What about XML namespaces? (Really, what people will want to do is type their own XPath. Sigh.)
 function extractID(doc) {
-  var id = doc.xpath('(//(id|_id))[1]').next().value;
+  var id = doc.xpath('(//(*:id|*:_id))[1]').next().value;
   if(!id) { // Why doesn't comparison to null work here?
     throw new Error('The document does not contain an ID, either id or _id.\n' + doc);
   }
