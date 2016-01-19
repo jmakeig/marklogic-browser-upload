@@ -5,6 +5,7 @@ import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
 import {
 	refreshDatabaseStats,
+	clearDatabase,
 	clearFormat,
 	clearCollection,
 	changeURIPolicy,
@@ -74,6 +75,9 @@ function clickHandler(evt) {
 	switch(target.nodeName.toLowerCase()) {
 		case 'button':
 			switch (target.name) {
+				case 'database-clear':
+					store.dispatch(clearDatabase(store.getState().databaseID));
+					break;
 				case 'collection-clear':
 					store.dispatch(clearCollection(target.value));
 					break;

@@ -30,6 +30,14 @@ function deleteByCollectionOrFormat(collection, format) {
       estimate++;
     }
     return {format: format, estimate: estimate};
+  } else {
+    var db = xdmp.database();
+    estimate = Number(cts.estimate(cts.trueQuery()));
+    console.warn('Clearing forests for database %s (%s)', xdmp.databaseName(db), db.toString());
+    xdmp.forestClear(
+      xdmp.databaseForests(db)
+    );
+    return {estimate: estimate};
   }
 }
 

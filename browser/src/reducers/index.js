@@ -4,6 +4,9 @@ import {
 	DATABASESTATS_REFRESH_INTENT,
 	DATABASESTATS_REFRESH_RECEIPT,
 	DATABASESTATS_REFRESH_ERROR,
+	DATABASE_CLEAR_INTENT,
+	DATABASE_CLEAR_RECEIPT,
+	DATABASE_CLEAR_ERROR,
 	COLLECTION_CLEAR_INTENT,
 	COLLECTION_CLEAR_RECEIPT,
 	COLLECTION_CLEAR_ERROR,
@@ -77,6 +80,10 @@ export function reducer(state = initialState, action) {
 			return Object.assign(newState, state, {isFetchingDatabaseStats: false, databaseStats: action.stats});
 			break;
 		case DATABASESTATS_REFRESH_ERROR:
+			return state; // TODO
+		case DATABASE_CLEAR_INTENT:
+	  case DATABASE_CLEAR_RECEIPT:
+		case DATABASE_CLEAR_ERROR:
 			return state; // TODO
 		case FORMAT_CLEAR_INTENT:
 		case FORMAT_CLEAR_RECEIPT:

@@ -2,6 +2,12 @@
 import {a, button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../dom.js';
 import * as dom from '../dom.js';
 
+const L10N = {
+  clearDatabase: {
+    'en-US': name => `Clear all of the data in the “${name}” database.\nRemoving the data is permanent cannot be undone.`
+  }
+};
+
 /**
  * Render database stats.
  * @param  {HTMLElement} el The parent element under which to render.
@@ -37,6 +43,7 @@ export function bindRenderDatabaseStats(el) {
     section.appendChild(h2(db.name));
     section.appendChild(div(db.documentsCount.toLocaleString() + ' documents'));
     section.appendChild(div(db.propertiesCount.toLocaleString() + ' properties'));
+    section.appendChild(button('Clear', undefined, {name: 'database-clear', value: '', title: L10N.clearDatabase['en-US'](db.name) }));
 
     section.appendChild(h3('Document Formats'));
     let table = document.createElement('table');

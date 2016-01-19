@@ -1,3 +1,5 @@
+'use strict'
+
 export const URI_POLICY_CHANGE = 'URI_POLICY_CHANGE';
 export const PERMISSION_CHANGE = 'PERMISSION_CHANGE';
 export const PERMISSION_DEFAULTS_CHANGE = 'PERMISSION_DEFAULTS_CHANGE';
@@ -9,16 +11,6 @@ export const FILES_UPLOAD_INTENT = 'FILES_UPLOAD_INTENT';
 export const FILES_UPLOAD_RECEIVE = 'FILES_UPLOAD_RECEIVE';
 export const FILES_UPLOAD_ERROR = 'FILES_UPLOAD_ERROR';
 
-
-/*
-  A template for asynchronous action creator lifcycle.
-  Use the `generate-actions.sh` script to create an instance.
-
-  cat template.js | ./generate-actions.sh > my-actions.js
-
- */
-
-'use strict'
 
 /* Refresh databaseStats *****************************************************/
 
@@ -451,15 +443,123 @@ function errorGetRoles(error) {
   }
 }
 
-/*
-  A template for asynchronous action creator lifcycle.
-  Use the `generate-actions.sh` script to create an instance.
 
-  cat template.js | ./generate-actions.sh > my-actions.js
+/* Clear database *****************************************************/
+
+/*
+
+0. Paste below into where your actions live
+
+1. Import action constants into the reducer and add to the switch statement
+
+  import {
+    DATABASE_CLEAR_INTENT,
+    DATABASE_CLEAR_RECEIPT,
+    DATABASE_CLEAR_ERROR,
+  } from '../actions'
+
+2. Import clearDatabase into the UI component
 
  */
 
-'use strict'
+export const DATABASE_CLEAR_INTENT  = 'DATABASE_CLEAR_INTENT';
+export const DATABASE_CLEAR_RECEIPT = 'DATABASE_CLEAR_RECEIPT';
+export const DATABASE_CLEAR_ERROR   = 'DATABASE_CLEAR_ERROR';
+
+/**
+ * The top-level asynchronous action creator.
+ * Dispatches intent, receipt, and error lifecycle events.
+ * @param  {Object} data The input sent to the remote request
+ * @return {function} The thunk
+ */
+export function clearDatabase(database) {
+  return function(dispatch, getState) {
+    dispatch(intendClearDatabase());
+    return doClearDatabase(database)
+      .then(function(receipt) {
+        console.log('Clear database');
+        dispatch(receivedClearDatabase(receipt));
+      })
+      // See <http://stackoverflow.com/questions/34799677/orchestrating-multiple-actions>
+      .then(() => dispatch(refreshDatabaseStats(getState().databaseID)))
+      .catch(function(error){
+        console.error(error);
+        dispatch(errorClearDatabase(error));
+      });
+  }
+}
+
+/**
+ * Perform the actual asynchronous work. There shouldn't be anything
+ * action-specific in here, just business logic.
+ * @param  {?} database
+ * @return {Promise}
+ */
+function doClearDatabase(database) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', `/marklogic/endpoints/documents.sjs?db=${database}`);
+    xhr.onload = function() {
+      if(this.status < 300) {
+        resolve(JSON.parse(this.responseText));
+      } else if (this.status >= 300) {
+        let error = new Error(this.responseText);
+        error.httpStatus = this.statusText;
+        error.httpCode = this.status;
+        reject(error);
+      }
+    };
+    xhr.ontimeout =
+    xhr.onabort =
+    xhr.error = function(evt) {
+      reject(new Error('Network Error'));
+    };
+    xhr.send();
+  });
+}
+
+/**
+ * Synchronous action declaring the intent to clear a database. Use this action
+ * to indicate progress on completing the task as well, for example from a file
+ * upload XHR request.
+ * @param  {number} progress = 0.0 An optional progress indicator from 0 to 1.0
+ * @return {Object} The intent action
+ */
+function intendClearDatabase(database, progress = 0.0) {
+  return {
+    type: DATABASE_CLEAR_INTENT,
+    database: database,
+    progress: progress
+  }
+}
+
+/**
+ * Synchronous action dispatched from the asynchronous `clearDatabase` indicating
+ * that the remote service has successfully returned data.
+ * @param  {Object} receipt The data returned from the service
+ * @return {Object} The receipt action
+ */
+function receivedClearDatabase(receipt) {
+  return {
+    type: DATABASE_CLEAR_RECEIPT,
+    receipt: receipt
+  }
+}
+
+/**
+ * Synchronous action dispatched from the asynchronous `clearDatabase` indicating
+ * that the remote service wasn’t able to complete because of an error.
+ * @param  {Error} error An `Error` instance with custom properties
+ *                        indicating specifics of the failure
+ * @return {Object} The action
+ */
+function errorClearDatabase(error) {
+  return {
+    type: DATABASE_CLEAR_ERROR,
+    error: error
+  }
+}
+
 
 /* Clear format *****************************************************/
 
