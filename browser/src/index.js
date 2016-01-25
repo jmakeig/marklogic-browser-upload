@@ -162,8 +162,12 @@ document.querySelector('#filedrag').addEventListener('dragleave', dragHover, fal
 // });
 
 store.subscribe(() => {
-	console.dir(store.getState().toJS());
-	const state = store.getState().toJS();
+	// TODO: Should I encapsulate Immutable? It feels like the view layer
+	// should only know about implicitly immutable JavaScript objects,
+	// not the actaul Immutable.js interfaces. How expensive is the
+	// `.toJS()` method?
+	const state = Object.freeze(store.getState().toJS()); // TODO: Object.freeze is probably overkill.
+	console.dir(state);
 	if(state.databaseStats) {
 		renderDatabaseStats(state.databaseStats);
 	}
@@ -178,7 +182,6 @@ store.subscribe(() => {
 
 store.dispatch(
 	refreshDatabaseStats(
-		// TODO: Should I encapsulate Immutable or not?
 		store.getState().get('databaseID')
 	)
 );
