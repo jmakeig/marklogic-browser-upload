@@ -97,10 +97,11 @@ function clickHandler(evt) {
 }
 document.querySelector('form').addEventListener('click', clickHandler, true);
 
-
 const store = applyMiddleware(thunk)
 	(createStore) // middleware store creator
 		(reducer); // create the store
+
+
 
 const renderDatabaseStats = bindRenderDatabaseStats(document.querySelector('#database'));
 const renderUploadSettings = bindRenderUploadSettings(
@@ -117,54 +118,6 @@ const renderUploadSettings = bindRenderUploadSettings(
 		}
 	}
 );
-
-store.subscribe(() => {
-	console.dir(store.getState());
-	const state = store.getState();
-	if(state.databaseStats) {
-		renderDatabaseStats(store.getState().databaseStats);
-	}
-	if(state.uploadSettings) {
-		renderUploadSettings(state.uploadSettings);
-	}
-
-	if(state.files.uploadProgress) {
-		document.querySelector('progress#progress').value = state.files.uploadProgress;
-	}
-});
-
-/*
-function observeStore(store, select, onChange) {
-  let currentState;
-
-  function handleChange() {
-		//console.log(((currentState || {})['uploadSettings'] || {}).uri);
-		console.log(currentState === store.getState());
-		try {
-			console.log(currentState.uploadSettings.uri == store.getState().uploadSettings.uri);
-		} catch (e) {
-			console.warn('oops');
-		}
-
-    let nextState = select(store.getState());
-    if (nextState !== currentState) {
-      currentState = nextState;
-      onChange(currentState);
-    }
-  }
-
-  let unsubscribe = store.subscribe(handleChange);
-  handleChange();
-  return unsubscribe;
-}
-
-observeStore(
-	store,
-	x => x,
-	//(prev, curr) => console.log('prev: %s, curr: %s', prev.uploadSettings.uri, curr.uploadSettings.uri)
-	x => x
-);
-*/
 
 function dropHandler(evt) {
 	evt.preventDefault();
@@ -190,4 +143,42 @@ function dragHover(evt) {
 document.querySelector('#filedrag').addEventListener('dragover', dragHover, false);
 document.querySelector('#filedrag').addEventListener('dragleave', dragHover, false);
 
-store.dispatch(refreshDatabaseStats(store.getState().databaseID));
+// function observeStore(store, select, onChange) {
+//   let currentState;
+//   function handleChange() {
+//     let nextState = select(store.getState());
+//     if (nextState !== currentState) {
+// 			onChange(currentState, nextState);
+// 			currentState = nextState;
+//     }
+//   }
+//   let unsubscribe = store.subscribe(handleChange);
+//   handleChange();
+//   return unsubscribe;
+// }
+//
+// observeStore(store, x => x, (curr, next) => {
+//
+// });
+
+store.subscribe(() => {
+	console.dir(store.getState().toJS());
+	const state = store.getState().toJS();
+	if(state.databaseStats) {
+		renderDatabaseStats(state.databaseStats);
+	}
+	if(state.uploadSettings) {
+		renderUploadSettings(state.uploadSettings);
+	}
+
+	if(state.files.uploadProgress) {
+		document.querySelector('progress#progress').value = state.files.uploadProgress;
+	}
+});
+
+store.dispatch(
+	refreshDatabaseStats(
+		// TODO: Should I encapsulate Immutable or not?
+		store.getState().get('databaseID')
+	)
+);
