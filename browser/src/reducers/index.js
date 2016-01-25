@@ -1,5 +1,6 @@
 'use strict'
 
+import * as Immutable from 'immutable';
 import {
 	DATABASESTATS_REFRESH_INTENT,
 	DATABASESTATS_REFRESH_RECEIPT,
@@ -27,8 +28,8 @@ import {
 	FORMAT_CLEAR_ERROR
 } from '../actions';
 
-const initialState = {
-	databaseID: "16204519326364673683",
+const initialState = Immutable.fromJS({
+	databaseID: '16204519326364673683',
 	isFetchingDatabaseStats: false,
 	locale: navigator.language,
 	databaseStats: null,
@@ -67,20 +68,20 @@ const initialState = {
 		}
 	}
 }
+);
 
 export function reducer(state = initialState, action) {
 	console.info('%s: %s', action.type, Object.keys(action).filter(k => 'type' !== k).join(', '));
-	let newState = Object.assign({}, state);
+	// let newState = Object.assign({}, state);
 	switch (action.type) {
+
 		case DATABASESTATS_REFRESH_INTENT:
-			return Object.assign(newState, state, {isFetchingDatabaseStats: true});
-			break;
+			return state.updateIn(['isFetchingDatabaseStats'], current => true);
 		case DATABASESTATS_REFRESH_RECEIPT:
-			// console.dir(action);
-			return Object.assign(newState, state, {isFetchingDatabaseStats: false, databaseStats: action.stats});
-			break;
+			return state.merge({isFetchingDatabaseStats: false, databaseStats: action.stats});
 		case DATABASESTATS_REFRESH_ERROR:
 			return state; // TODO
+/*
 		case DATABASE_CLEAR_INTENT:
 	  case DATABASE_CLEAR_RECEIPT:
 		case DATABASE_CLEAR_ERROR:
@@ -89,16 +90,15 @@ export function reducer(state = initialState, action) {
 		case FORMAT_CLEAR_RECEIPT:
 		case FORMAT_CLEAR_ERROR:
 			return Object.assign(newState, {databaseStats: null}); // Clear stats to indicate that we need a refresh
-			break;
 		case COLLECTION_CLEAR_INTENT:
 		case COLLECTION_CLEAR_RECEIPT:
 		case COLLECTION_CLEAR_ERROR:
 			return state;
-			break;
+*/
 		case URI_POLICY_CHANGE:
-			// FIXME: This is ugly. Is there a way to do it without a temp variable?
-			newState.uploadSettings.uri = action.uriPolicy;
-			return newState;
+			// console.info('Affecting URI_POLICY_CHANGE from %s to %s', state.getIn(['uploadSettings', 'uri']), action.uriPolicy);
+			return state.updateIn(['uploadSettings', 'uri'], current => action.uriPolicy);
+/*
 		case COLLECTION_ENABLED_CHANGE:
 			// FIXME: This is ugly. Isn't there a better way to do this?
 			// Find the collection and change its `enabled` property.
@@ -112,6 +112,7 @@ export function reducer(state = initialState, action) {
 						return coll;
 					}
 				);
+				return newState;
 		case COLLECTION_DEFAULTS_CHANGE:
 			newState.uploadSettings.collections.default = action.enabled;
 			return newState;
@@ -140,6 +141,7 @@ export function reducer(state = initialState, action) {
 		case ROLES_GET_RECEIPT:
 			newState.uploadSettings.permissions.cachedRoles = action.roles;
 			return newState;
+*/
 		default:
 			console.warn('default state');
 			return state;
