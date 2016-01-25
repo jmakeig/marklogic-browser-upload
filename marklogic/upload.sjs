@@ -74,7 +74,7 @@ function calculatePermissions(permissions, defaults) {
 // FIXME: This is brittle
 // TODO: What about XML namespaces? (Really, what people will want to do is type their own XPath. Sigh.)
 function extractID(doc) {
-  var id = doc.xpath('(//(id|_id))[1]').next().value;
+  var id = doc.xpath('(//(*:id|*:_id))[1]').next().value;
   if(!id) { // Why doesn't comparison to null work here?
     throw new Error('The document does not contain an ID, either id or _id.\n' + doc);
   }
@@ -99,7 +99,6 @@ function extractID(doc) {
  */
 function deriveURI(node, policy, filename) {
   var basename = filename;
-  // console.log(node);
   var kind = util.documentKind(node);
   switch (policy) {
     case 'filename':
@@ -118,7 +117,18 @@ function deriveURI(node, policy, filename) {
 
 var docCount = files.length;
 for(var i = 0; i < docCount; i++) {
-  var node = xdmp.unquote(files[i]).next().value; // Yikes! unquote always returns a ValueIterator.
+  var node;
+  if(files[i] instanceof BinaryNode || files[i] instanceof Text) {
+    node = files[i];
+  } else {
+    var itr = xdmp.quote(files[i]);
+    // if('function' === typeof itr.next) { // TODO: Is there a better way to detect the new (or old) interface?
+      // TODO: The ValueIterator interface changes from an Iterator to an Iterable in MarkLogic 9
+      node = xdmp.unquote(files[i]).next().value; // Yikes! unquote always returns a ValueIterator.
+    // } else {
+      // node = Array.from(xdmp.unquote(files[i]))[0]; // FIXME: This should use fn.head()
+    // }
+  }
   var uri = deriveURI(node, uris, fileNames[i]);
   console.log('Inserting ' + uri);
   xdmp.documentInsert(

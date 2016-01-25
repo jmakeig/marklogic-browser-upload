@@ -1,74 +1,87 @@
 body {
-	padding: 1em;
-	font-family: "Helvetica Neue", Helvetica, sans-serif;
-	line-height: 1.4;
+  padding: 1em;
+
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  line-height: 1.4;
 }
 h1, h2, h3, h4, h5, h6 {
-	line-height: 1.1;
-	margin: 0.5em 0;
+  margin: 0.5em 0;
+
+  line-height: 1.1;
 }
 table {
-	width: 100%;
-	border-collapse: collapse;
-	margin: 0.5em -0.5em;
+  width: 100%;
+  margin: 0.5em -0.5em;
+
+  border-collapse: collapse;
 }
 th, td {
-	padding: 0.5em;
-	border-bottom: solid 1px #ccc;
-	text-align: left;
+  padding: 0.5em;
+
+  border-bottom: solid 1px #ccc;
+
+  text-align: left;
 }
 td.check {
-	width: 1em;
-	text-align: center;
+  width: 1em;
+
+  text-align: center;
 }
 td.button {
-	width: 2em;
-	text-align: right;
+  width: 2em;
+
+  text-align: right;
 }
 td.number {
-	text-align: right;
+  text-align: right;
 }
-form,
-ul.select-group {
-	width: 100%;
-	display: flex;
-	flex-direction: row;
+form, ul.select-group {
+  display: flex;
+  flex-direction: row;
+
+  width: 100%;
 }
-form > section,
-ul.select-group > li {
-	flex: 1 0 0;
-	padding: 1em;
+form>section, ul.select-group>li {
+  padding: 1em;
+
+  flex: 1 0 0;
 }
 
 ul.select-group {
-	padding: 0;
+  padding: 0;
 }
-ul.select-group > li {
-	list-style: none;
-	padding: 0;
+ul.select-group>li {
+  padding: 0;
+
+  list-style: none;
 }
 
-label > input {
-	margin-right: 1em;
+label>input {
+  margin-right: 1em;
 }
 
 progress {
-	width: 100%;
+  width: 100%;
 }
 #filedrag {
-	height: 20em;
-	font-weight: bold;
-	text-align: center;
-	padding: 1em 0;
-	margin: 1em 0;
-	border: 1px dashed;
-	border-radius: 7px;
-	cursor: default;
+  height: 20em;
+  margin: 1em 0;
+  padding: 1em 0;
+
+  border: 1px dashed;
+  border-radius: 7px;
+
+  cursor: default;
+  text-align: center;
+
+  font-weight: bold;
 }
 
 #filedrag.hover {
-	color: #f00;
-	border-color: #f00;
-	border-style: solid;
-	box-shadow: inset 0 3px 4px #888;
+  border-style: solid;
+  border-color: #f00;
+
+  box-shadow: inset 0 3px 4px #888;
+
+  color: #f00;
 }

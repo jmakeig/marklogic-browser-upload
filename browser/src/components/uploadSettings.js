@@ -1,44 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
+'use strict'
+import {button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../util/dom.js';
+import * as dom from '../util/dom.js';
 
-<head>
-  <meta charset="utf-8">
-  <title>Drag and drop</title>
-  <link rel="stylesheet" href="upload.css" />
-</head>
-
-<body>
-  <form id="upload" method="POST" enctype="multipart/form-data">
-    <section id="database"><!--
-      <h2>Documents</h2>
-      <div>114,328 documents</div>
-      <div>1,187 properties</div>
-      <h3>Collections</h3>
-      <table>
-        <tr><td>staging</td><td class="number">89,995</td><td class="button"><button name="collection-staging-clear" value="clear">Clear…</button></td></tr>
-        <tr><td>production</td><td class="number">24,333</td><td class="button"><button name="collection-production-clear" value="clear">Clear…</button></td></tr>
-        <tr><td>batch-123</td><td class="number">100</td><td class="button"><button name="collection-batch-123-clear" value="clear">Clear…</button></td></tr>
-        <tr><td>batch-456</td><td class="number">87</td><td class="button"><button name="collection-batch-456-clear" value="clear">Clear…</button></td></tr>
-      </table>
-      <h3>Formats</h3>
-      <table>
-        <tr><td>json</td><td class="number">89,995</td></tr>
-        <tr><td>xml</td><td class="number">24,333</td></tr>
-        <tr><td>binary</td><td class="number">100</td></tr>
-        <tr><td>text</td><td class="number">87</td></tr>
-      </table>
-    --></section>
-    <section>
-      <h2>Upload Files</h2>
-      <div>
-        <progress id="progress" value="0">
-          <span>0</span>%
-        </progress>
-      </div>
-      <div id="filedrag">
-        <input type="file" id="fileselect" name="fileselect[]" multiple="multiple" />
-      </div>
-    </section>
+export function bindRenderUploadSettings(bindings) {
+  /*
+  {
+		'uris': Array.from(document.querySelectorAll('input[name=uris]')),
+		'collections': {
+			'list': document.querySelector('table.collections > tbody'), // table
+			'defaults': document.querySelector('input[name=collection-defaults]'),
+			'batch': document.querySelector('input[name=collection-batch]')
+		},
+		'permissions': {
+			'list': document.querySelector('table.permissions > tbody'), // table
+			'defaults': document.querySelector('input[name=permission-defaults]')
+		}
+	}
+  */
+  return function(options, locale) {
+    /*
     <section>
       <h2>Settings</h2>
       <div>
@@ -50,7 +30,7 @@
         </ul>
         <h3>Collections</h3>
         <div>
-          <table>
+          <table class="collections">
             <tr><td>staging</td><td class="check"><input type="checkbox" name="collections" value="staging" checked="checked"/></td></tr>
             <tr><td>production</td><td class="check"><input type="checkbox" name="collections" value="production" checked="checked"/></td></tr>
           </table>
@@ -62,7 +42,7 @@
           </ul>
         </div>
         <div>
-          <table>
+          <table class="permissions">
             <colgroup span="1"/>
             <colgroup span="4"/>
             <thead><tr><th><h3>Permissions</h3></th><th>R</th><th>U</th><th>I</th><th>E</th></tr></thead>
@@ -88,7 +68,51 @@
         </div>
       </div>
     </section>
-  </form>
-</body>
-<script src="upload.js"></script>
-</html>
+     */
+
+    bindings.uris.forEach(uri => uri.checked = (uri.value === options.uri));
+
+    const collections = dom.clear(bindings.collections.list);
+    options.collections.user
+      .map(coll => tr([
+        td(coll.name),
+        td(
+          checkbox(coll.enabled, undefined, {name: 'collections', value: coll.name}),
+          'check'
+        )
+      ])
+      )
+      .forEach(row => collections.appendChild(row));
+
+    /*
+      permissions: {
+  			user: {
+  				'some-role': ['read', 'update', 'insert', 'execute']
+  			},
+  			'default': true,
+  			cachedRoles: null // Pre-load the roles from the server for auto-suggest
+  		}
+    */
+    const permissions = dom.clear(bindings.permissions.list);
+    const capabilities = ['read', 'update', 'insert', 'execute'];
+
+    Object.keys(options.permissions.user)
+      .map(role => tr([
+        td(role),
+        ...capabilities.map(
+          cap => td(
+            checkbox(
+              options.permissions.user[role].indexOf(cap) > -1,
+              undefined,
+              {name: 'permission*' + role, value: cap}
+            )
+            , 'check'
+          )
+        )
+      ])
+      )
+      .forEach(row => permissions.appendChild(row));
+
+    bindings.permissions.defaults.checked = options.permissions.default;
+  }
+}

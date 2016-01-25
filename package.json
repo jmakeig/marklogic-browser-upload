@@ -1,0 +1,43 @@
+{
+  "name": "marklogic-browser-upload",
+  "version": "0.0.1",
+  "description": "Proof of concept of drag-n-drop file uploads for MarkLogic’s Query Console",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jmakeig/marklogic-browser-upload"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/babel-tape-runner browser/test/*.js | ./node_modules/.bin/tap-notify | ./node_modules/.bin/tap-diff",
+    "start": "webpack-dev-server --hot --inline --progress --colors --port 3000",
+    "build": "npm run-script clean; ./node_modules/.bin/webpack --progress --colors",
+    "clean": "rm browser/bundle.js browser/bundle.js.map browser/vendor.bundle.js browser/vendor.bundle.js.map 2>/dev/null; exit 0;"
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "babel-cli":                 "6.4.0",
+    "babel-core":                "^6.3.26",
+    "babel-loader":              "^6.2.0",
+    "babel-preset-es2015":       "^6.3.13",
+    "babel-preset-stage-0":      "^6.3.13",
+    "babel-tape-runner":         "^2.0.0",
+    "css-loader":                "^0.23.1",
+    "csscomb":                   "^3.1.8",
+    "eslint":                    "^1.10.3",
+    "file-loader":               "^0.8.4",
+    "style-loader":              "^0.13.0",
+    "tap-diff":                  "^0.1.1",
+    "tap-notify":                "^0.0.3",
+    "tape":                      "^4.4.0",
+    "webpack":                   "^1.12.10",
+    "webpack-dev-server":        "^1.12.0",
+    "webpack-hot-middleware":    "^2.2.0"
+  },
+  "dependencies": {
+    "babel-runtime":             "^6.3.19",
+    "immutable":                 "^3.7.6",
+    "isomorphic-fetch":          "^2.2.0",
+    "redux":                     "^3.0.2",
+    "redux-thunk":               "^1.0.3"
+  }
+}
