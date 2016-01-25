@@ -143,30 +143,29 @@ function dragHover(evt) {
 document.querySelector('#filedrag').addEventListener('dragover', dragHover, false);
 document.querySelector('#filedrag').addEventListener('dragleave', dragHover, false);
 
-// function observeStore(store, select, onChange) {
-//   let currentState;
-//   function handleChange() {
-//     let nextState = select(store.getState());
-//     if (nextState !== currentState) {
-// 			onChange(currentState, nextState);
-// 			currentState = nextState;
-//     }
-//   }
-//   let unsubscribe = store.subscribe(handleChange);
-//   handleChange();
-//   return unsubscribe;
-// }
-//
-// observeStore(store, x => x, (curr, next) => {
-//
-// });
+function observeStore(store, select, onChange) {
+  let currentState;
+  function handleChange() {
+    let nextState = select(store.getState());
+    if (nextState !== currentState) {
+			onChange(currentState, nextState);
+			currentState = nextState;
+    }
+  }
+  let unsubscribe = store.subscribe(handleChange);
+  handleChange();
+  return unsubscribe;
+}
 
-store.subscribe(() => {
-	// TODO: Should I encapsulate Immutable? It feels like the view layer
-	// should only know about implicitly immutable JavaScript objects,
-	// not the actaul Immutable.js interfaces. How expensive is the
-	// `.toJS()` method?
-	const state = Object.freeze(store.getState().toJS()); // TODO: Object.freeze is probably overkill.
+observeStore(store, x => x, (curr, next) => {
+	if(undefined !== curr) {
+		console.log('Previous: %s, Next: %s', curr.toJS().uploadSettings.uri, next.toJS().uploadSettings.uri);
+	}
+
+	const state =
+		Object.freeze( // TODO: Object.freeze is probably overkill.
+			next.toJS()
+		);
 	console.dir(state);
 	if(state.databaseStats) {
 		renderDatabaseStats(state.databaseStats);
@@ -179,6 +178,30 @@ store.subscribe(() => {
 		document.querySelector('progress#progress').value = state.files.uploadProgress;
 	}
 });
+
+/*
+store.subscribe(() => {
+	// TODO: Should I encapsulate Immutable? It feels like the view layer
+	// should only know about implicitly immutable JavaScript objects,
+	// not the actaul Immutable.js interfaces. How expensive is the
+	// `.toJS()` method?
+	const state =
+		Object.freeze( // TODO: Object.freeze is probably overkill.
+			store.getState().toJS()
+		);
+	console.dir(state);
+	if(state.databaseStats) {
+		renderDatabaseStats(state.databaseStats);
+	}
+	if(state.uploadSettings) {
+		renderUploadSettings(state.uploadSettings);
+	}
+
+	if(state.files.uploadProgress) {
+		document.querySelector('progress#progress').value = state.files.uploadProgress;
+	}
+});
+*/
 
 store.dispatch(
 	refreshDatabaseStats(

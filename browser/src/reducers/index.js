@@ -70,6 +70,7 @@ const initialState = Immutable.fromJS({
 }
 );
 
+// TODO: Split this out into composable reducers
 export function reducer(state = initialState, action) {
 	console.info('%s: %s', action.type, Object.keys(action).filter(k => 'type' !== k).join(', '));
 	// let newState = Object.assign({}, state);
@@ -111,36 +112,28 @@ export function reducer(state = initialState, action) {
 					}
 				);
 			return state.setIn(path, list);
-/*
 		case COLLECTION_DEFAULTS_CHANGE:
-			newState.uploadSettings.collections.default = action.enabled;
-			return newState;
+			return state.setIn(['uploadSettings', 'collections', 'default'], action.enabled);
 		case COLLECTION_BATCH_CHANGE:
-			newState.uploadSettings.collections.batch = action.enabled;
-			return newState;
+			return state.setIn(['uploadSettings', 'collections', 'batch'],action.enabled);
 		case PERMISSION_CHANGE:
-			newState.uploadSettings.permissions.user[action.role] = action.capabilities;
-			return newState;
+			return state.setIn(['uploadSettings', 'permissions', 'user', action.role], action.capabilities);
 		case PERMISSION_DEFAULTS_CHANGE:
-			newState.uploadSettings.permissions.default = action.enabled;
-			return newState;
+			state.setIn(['uploadSettings', 'permissions', 'default'], action.enabled);
 		case FILES_SPECIFY:
-			newState.files.fileList = action.files;
-			return newState;
+			return state.setIn(['files', 'fileList'], Immutable.List(action.files));
 		case FILES_UPLOAD_INTENT:
-			newState.files.uploadProgress = action.progress;
 			console.info('Progress %d%%', action.progress * 100);
-			return newState;
+			return state.setIn (['files', 'uploadProgress'], action.progress);
 		case FILES_UPLOAD_RECEIVE:
-			newState.files.uploadProgress = 1;
-			newState.files.fileList = null;
+			return state
+				.setIn (['files', 'uploadProgress'], action.progress)
+				.setIn(['files', 'fileList'], null);
 			return newState;
 		// case ROLES_GET_INTENT:
 		// case ROLES_GET_ERROR:
 		case ROLES_GET_RECEIPT:
-			newState.uploadSettings.permissions.cachedRoles = action.roles;
-			return newState;
-*/
+			return state.setIn(['uploadSettings', 'permissions', 'cachedRoles'], Immutable.fromJS(action.roles));
 		default:
 			console.warn('default state');
 			return state;
