@@ -80,8 +80,8 @@ export function reducer(state = initialState, action) {
 		case DATABASESTATS_REFRESH_RECEIPT:
 			return state.merge({isFetchingDatabaseStats: false, databaseStats: action.stats});
 		case DATABASESTATS_REFRESH_ERROR:
-			return state; // TODO
-/*
+			console.warn(DATABASESTATS_REFRESH_ERROR);
+			return state; // TODO: Handle database refresh error
 		case DATABASE_CLEAR_INTENT:
 	  case DATABASE_CLEAR_RECEIPT:
 		case DATABASE_CLEAR_ERROR:
@@ -89,30 +89,29 @@ export function reducer(state = initialState, action) {
 		case FORMAT_CLEAR_INTENT:
 		case FORMAT_CLEAR_RECEIPT:
 		case FORMAT_CLEAR_ERROR:
-			return Object.assign(newState, {databaseStats: null}); // Clear stats to indicate that we need a refresh
+			return state.merge({databaseStats: null});
 		case COLLECTION_CLEAR_INTENT:
 		case COLLECTION_CLEAR_RECEIPT:
 		case COLLECTION_CLEAR_ERROR:
+			console.warn(action.type);
 			return state;
-*/
 		case URI_POLICY_CHANGE:
 			// console.info('Affecting URI_POLICY_CHANGE from %s to %s', state.getIn(['uploadSettings', 'uri']), action.uriPolicy);
 			return state.updateIn(['uploadSettings', 'uri'], current => action.uriPolicy);
-/*
 		case COLLECTION_ENABLED_CHANGE:
-			// FIXME: This is ugly. Isn't there a better way to do this?
 			// Find the collection and change its `enabled` property.
-			newState.uploadSettings.collections.user =
-				newState.uploadSettings.collections.user.map(
-					function(coll) {
-						if(action.collection === coll.name) {
-							coll.enabled = action.enabled;
-							return coll;
+			const path = ['uploadSettings', 'collections', 'user'];
+			const list = state.getIn(path)
+				.map(
+					coll => {
+						if(coll.get('name') === action.collection) {
+							return coll.merge({enabled: action.enabled});
 						}
 						return coll;
 					}
 				);
-				return newState;
+			return state.setIn(path, list);
+/*
 		case COLLECTION_DEFAULTS_CHANGE:
 			newState.uploadSettings.collections.default = action.enabled;
 			return newState;
