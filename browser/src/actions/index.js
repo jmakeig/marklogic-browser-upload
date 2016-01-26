@@ -45,7 +45,6 @@ export function refreshDatabaseStats(id) {
 		dispatch(intendRefreshDatabaseStats(id));
 		return doRefreshDatabaseStats(id)
 			.then(function(receipt) {
-				console.log('Refresh databaseStats');
 				dispatch(receivedRefreshDatabaseStats(receipt));
 			})
       // .then( Dispatch subsequent actions here. )
@@ -267,7 +266,6 @@ export function clearCollection(collection) {
 		dispatch(intendClearCollection());
 		return doClearCollection(collection)
 			.then(function(receipt) {
-				console.log('Clear Collection');
 				dispatch(receivedClearCollection(receipt));
 			})
 			// FIXME: This is really ugly, having to tightly couple the clear
