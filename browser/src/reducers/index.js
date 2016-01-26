@@ -29,8 +29,8 @@ import {
 } from '../actions';
 
 const initialState = Immutable.fromJS({
-	databaseID: '16204519326364673683',
-	isFetchingDatabaseStats: false,
+	databaseID: '16204519326364673683', // TODO: Get this externally
+	workInProgress: {},
 	locale: navigator.language,
 	databaseStats: null,
 	files: {
@@ -77,25 +77,27 @@ export function reducer(state = initialState, action) {
 	switch (action.type) {
 
 		case DATABASESTATS_REFRESH_INTENT:
-			return state.updateIn(['isFetchingDatabaseStats'], current => true);
+			return state.setIn(['workInProgress', DATABASESTATS_REFRESH_INTENT], true);
 		case DATABASESTATS_REFRESH_RECEIPT:
-			return state.merge({isFetchingDatabaseStats: false, databaseStats: action.stats});
+			return state
+				.merge({databaseStats: action.stats})
+				.deleteIn(['workInProgress', DATABASESTATS_REFRESH_INTENT]);
 		case DATABASESTATS_REFRESH_ERROR:
-			console.warn(DATABASESTATS_REFRESH_ERROR);
-			return state; // TODO: Handle database refresh error
+			return state.deleteIn(['workInProgress', DATABASESTATS_REFRESH_INTENT]);
 		case DATABASE_CLEAR_INTENT:
+			return state.setIn(['workInProgress', DATABASE_CLEAR_INTENT], true);
 	  case DATABASE_CLEAR_RECEIPT:
 		case DATABASE_CLEAR_ERROR:
-			return state; // TODO
+			return state.deleteIn(['workInProgress', DATABASE_CLEAR_INTENT]);
 		case FORMAT_CLEAR_INTENT:
 		case FORMAT_CLEAR_RECEIPT:
 		case FORMAT_CLEAR_ERROR:
 			return state.merge({databaseStats: null});
 		case COLLECTION_CLEAR_INTENT:
+			return state.setIn(['workInProgress', COLLECTION_CLEAR_INTENT], true);
 		case COLLECTION_CLEAR_RECEIPT:
 		case COLLECTION_CLEAR_ERROR:
-			console.warn(action.type);
-			return state;
+			return state.deleteIn(['workInProgress', COLLECTION_CLEAR_INTENT]);
 		case URI_POLICY_CHANGE:
 			// console.info('Affecting URI_POLICY_CHANGE from %s to %s', state.getIn(['uploadSettings', 'uri']), action.uriPolicy);
 			return state.updateIn(['uploadSettings', 'uri'], current => action.uriPolicy);

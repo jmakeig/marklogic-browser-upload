@@ -158,9 +158,9 @@ function observeStore(store, select, onChange) {
 }
 
 observeStore(store, x => x, (curr, next) => {
-	if(undefined !== curr) {
-		console.log('Previous: %s, Next: %s', curr.toJS().uploadSettings.uri, next.toJS().uploadSettings.uri);
-	}
+	// if(undefined !== curr) {
+	// 	console.log('Previous: %s, Next: %s', curr.toJS().uploadSettings.uri, next.toJS().uploadSettings.uri);
+	// }
 
 	const state =
 		Object.freeze( // TODO: Object.freeze is probably overkill.
@@ -176,6 +176,13 @@ observeStore(store, x => x, (curr, next) => {
 
 	if(state.files.uploadProgress) {
 		document.querySelector('progress#progress').value = state.files.uploadProgress;
+	}
+
+	// TODO: Show work indicator
+	if(Object.keys(state.workInProgress).length > 0) {
+		console.info('%d in progress', Object.keys(state.workInProgress).length);
+	} else {
+		console.info('None in progress');
 	}
 });
 
