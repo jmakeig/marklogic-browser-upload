@@ -195,7 +195,7 @@ export function uploadFiles(formData) {
 			})
 			// FIXME: This is really ugly, having to tightly couple the clear
 			// collection and refresh database stats.
-			.then(() => dispatch(refreshDatabaseStats(getState().databaseID)))
+			.then(() => dispatch(refreshDatabaseStats(getState().get('databaseID'))))
 			.catch(function(error){
 				console.error(error);
 				dispatch(errorUploadFiles(error));
@@ -272,7 +272,8 @@ export function clearCollection(collection) {
 			})
 			// FIXME: This is really ugly, having to tightly couple the clear
 			// collection and refresh database stats.
-			.then(() => dispatch(refreshDatabaseStats(getState().databaseID)))
+			// See <https://medium.com/infinite-red/using-redux-saga-to-simplify-your-growing-react-native-codebase-2b8036f650de>
+			.then(() => dispatch(refreshDatabaseStats(getState().get('databaseID'))))
 			.catch(function(error){
 				console.error(error);
 				dispatch(errorClearCollection(error));
@@ -481,7 +482,7 @@ export function clearDatabase(database) {
         dispatch(receivedClearDatabase(receipt));
       })
       // See <http://stackoverflow.com/questions/34799677/orchestrating-multiple-actions>
-      .then(() => dispatch(refreshDatabaseStats(getState().databaseID)))
+      .then(() => dispatch(refreshDatabaseStats(getState().get('databaseID'))))
       .catch(function(error){
         console.error(error);
         dispatch(errorClearDatabase(error));
@@ -593,12 +594,12 @@ export function clearFormat(format) {
   console.log('Clearing format %s', format);
 	return function(dispatch, getState) {
 		dispatch(intendClearFormat());
-		return doClearFormat(format, getState().databaseID)
+		return doClearFormat(format, getState().get('databaseID'))
 			.then(function(receipt) {
 				console.log('Clear format');
 				dispatch(receivedClearFormat(receipt));
 			})
-      .then(() => dispatch(refreshDatabaseStats(getState().databaseID)))
+      .then(() => dispatch(refreshDatabaseStats(getState().get('databaseID'))))
 			.catch(function(error){
 				console.error(error);
 				dispatch(errorClearFormat(error));
