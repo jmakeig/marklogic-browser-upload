@@ -77,7 +77,7 @@ function doRefreshDatabaseStats(id) {
     };
     xhr.ontimeout =
 		xhr.onabort =
-		xhr.error = function(evt) {
+		xhr.onerroror = function(evt) {
 			console.error(evt);
       // TODO: Get error messsage
       reject(new Error('Network Error'));
@@ -510,7 +510,7 @@ function doClearDatabase(database) {
     };
     xhr.ontimeout =
     xhr.onabort =
-    xhr.error = function(evt) {
+    xhr.onerroror = function(evt) {
       reject(new Error('Network Error'));
     };
     xhr.send();
