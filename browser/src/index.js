@@ -215,3 +215,4 @@ store.dispatch(
 		store.getState().get('databaseID')
 	)
 );
+store.dispatch(getRoles());
