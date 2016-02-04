@@ -76,7 +76,7 @@ function clickHandler(evt) {
 		case 'button':
 			switch (target.name) {
 				case 'database-clear':
-					store.dispatch(clearDatabase(store.getState().databaseID));
+					store.dispatch(clearDatabase(store.getState().get('databaseID')));
 					break;
 				case 'collection-clear':
 					store.dispatch(clearCollection(target.value));
