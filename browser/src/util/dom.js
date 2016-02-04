@@ -3,6 +3,25 @@
 const DEFAULT_LOCALE = 'en-US';
 
 function _el(localname, classList, attrs, contents, locale) {
+  if('select' === localname) {
+    /* contents = { <value>: <label> } */
+    let value;
+    if(attrs && attrs.value) {
+      value = attrs.value;
+      delete attrs.value;
+    }
+    if(contents) {
+      // FIXME: Using an object doesn't allow you to *sort* options
+      contents = Object.keys(contents)
+        .map(v => _el(
+            'option',
+            null,
+            Object.assign({value: v}, v === value ? {selected: 'selected'} : {}),
+            contents[v]
+          )
+        );
+    }
+  }
   let elem = document.createElement(localname || 'div');
   if('string' === typeof contents) {
     elem.textContent = contents;
@@ -45,6 +64,7 @@ export function td      (t, c, a, l) {return _el('td',     c, a, t, l);}
 export function button  (t, c, a, l) {return _el('button', c, a, t, l);}
 export function span    (t, c, a, l) {return _el('span',   c, a, t, l);}
 export function p       (t, c, a, l) {return _el('p',      c, a, t, l);}
+export function select  (t, c, a, l) {return _el('select', c, a, t, l);}
 export function checkbox(t, c, a, l) {return _el('input',  c, Object.assign(a || {}, {type: 'checkbox'}), t, l);}
 export function radio   (t, c, a, l) {return _el('input',  c, Object.assign(a || {}, {type: 'radio'}), t, l);}
 
