@@ -1,5 +1,5 @@
 'use strict'
-import {button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../util/dom.js';
+import {button, checkbox, div, h1, h2, h3, p, span, td, tr, select} from '../util/dom.js';
 import * as dom from '../util/dom.js';
 
 export function bindRenderUploadSettings(bindings) {
@@ -96,9 +96,34 @@ export function bindRenderUploadSettings(bindings) {
     const permissions = dom.clear(bindings.permissions.list);
     const capabilities = ['read', 'update', 'insert', 'execute'];
 
+    function makeKeyValue(obj) {
+      if(obj) {
+        const out = {};
+        for(let k in obj) {
+          if(out[obj[k]]) { throw new Error(`Key ${obj[k]} already exists`); }
+          out[obj[k]] = obj[k];
+        }
+        return out;
+      }
+    }
+
+    function buildRolesSelect(name, value) {
+      return select(
+        options.permissions.cachedRoles ?
+          makeKeyValue( // UGLY: Turns {key: value} into {value: value}
+              options.permissions.cachedRoles
+                // UGLY: Flattens [{id: name}] into a single object {id: name}
+                .reduce((p, c) => Object.assign(p, c), {})
+          ) : undefined,
+        null,
+        Object.assign({}, name ? {name: name} : {}, value ? {value: value} : {})
+      );
+    }
+
     Object.keys(options.permissions.user)
       .map(role => tr([
-        td(role),
+        //td(role),
+        td(buildRolesSelect(role, role)),
         ...capabilities.map(
           cap => td(
             checkbox(
