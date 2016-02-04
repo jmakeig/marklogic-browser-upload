@@ -96,6 +96,7 @@ export function bindRenderUploadSettings(bindings) {
     const permissions = dom.clear(bindings.permissions.list);
     const capabilities = ['read', 'update', 'insert', 'execute'];
 
+    /*
     function makeKeyValue(obj) {
       if(obj) {
         const out = {};
@@ -106,15 +107,20 @@ export function bindRenderUploadSettings(bindings) {
         return out;
       }
     }
+    */
+
+    // FIXME: Yuck! This is
+    function firstValue(obj) { if(!obj) return; for(let k in obj) return obj[k]; }
 
     function buildRolesSelect(name, selectedValue) {
+      let opts = [];
+      if(options && options.permissions && options.permissions.cachedRoles) {
+        opts = options.permissions.cachedRoles
+          .sort((a, b) => firstValue(a) > firstValue(b) ? 1 : -1);
+      }
+      console.dir(opts);
       return select(
-        options.permissions.cachedRoles ?
-          makeKeyValue( // UGLY: Turns {key: value} into {value: value}
-              options.permissions.cachedRoles
-                // UGLY: Flattens [{id: name}] into a single object {id: name}
-                .reduce((p, c) => Object.assign(p, c), {})
-          ) : undefined,
+        opts,
         null,
         Object.assign({},
           name ? {name: name} : {},

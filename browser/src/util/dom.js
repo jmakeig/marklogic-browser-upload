@@ -2,22 +2,27 @@
 
 const DEFAULT_LOCALE = 'en-US';
 
+function firstKey(obj) { if(!obj) return; for(let k in obj) return k; }
+function firstValue(obj) { if(!obj) return; for(let k in obj) return obj[k]; }
+
 function _el(localname, classList, attrs, contents, locale) {
   if('select' === localname) {
-    /* contents = { <value>: <label> } */
+    /* contents = [{ <value>: <label> }] */
     let value;
     if(attrs && attrs.value) {
       value = attrs.value;
       delete attrs.value;
     }
     if(contents) {
-      // FIXME: Using an object doesn't allow you to *sort* options
-      contents = Object.keys(contents)
-        .map(v => _el(
+      contents = contents
+        .map(opt => _el(
             'option',
             null,
-            Object.assign({value: v}, v === value ? {selected: 'selected'} : {}),
-            contents[v]
+            Object.assign(
+              {value: firstKey(opt)},
+              value === firstValue(opt) ? {selected: 'selected'} : {}
+            ),
+            firstValue(opt)
           )
         );
     }
