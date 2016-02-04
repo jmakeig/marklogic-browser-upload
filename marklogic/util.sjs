@@ -71,6 +71,22 @@ function head(itr) {
   throw new TypeError(Object.prototype.toString().call(itr) + ' is not an Iterable or a ValueIterator');
 }
 
+// TODO: Ugly!
+if(!Array.from) {
+  Array.from = function(itr) {
+    if(!itr) throw new TypeError('Cannot create an array from a missing value');
+    if(itr instanceof ValueIterator) return itr.toArray();
+    var out = [];
+    if('function' === typeof itr.next) {
+      for(var item of itr) {
+        out.push(item);
+      }
+      return out;
+    }
+    throw new TypeError('Not iterable');
+  }
+}
+
 module.exports.applyAs = applyAs;
 module.exports.uuid = uuid;
 module.exports.documentKind = documentKind;

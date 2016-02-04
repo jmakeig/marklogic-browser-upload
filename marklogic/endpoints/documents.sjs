@@ -1,5 +1,4 @@
-'use strict'
-declareUpdate();
+'use strict';
 
 var  util = require('../util');
 
@@ -8,6 +7,7 @@ function deleteByCollectionOrFormat(collection, format) {
   if(collection) {
     var isNone = ('********none' === collection); // TODO: Need to share the constant with the front end.
     if(!isNone) {
+      // TODO: Does this lock the entire collection because it's an update?
       estimate = Number(cts.estimate(cts.collectionQuery([collection]))); // There seems to be something going on with lazy evaluation that requires me to create a number explicitly. Otherwise estimate is always 1. (?)
       xdmp.collectionDelete(collection);
     } else {
@@ -41,15 +41,48 @@ function deleteByCollectionOrFormat(collection, format) {
   }
 }
 
-if('DELETE' === xdmp.getRequestMethod()) {
-  var db = xdmp.getRequestField('db', xdmp.database().toString());
-  var collection = xdmp.getRequestField('coll');
-  var format = xdmp.getRequestField('format');
+/**
+ * [getDocuments description]
+ * @param  {[type]} collections [description]
+ * @param  {[type]} formats     [description]
+ * @return {[type]}             [description]
+ */
+function getDocuments(collections, formats, query) {
+  var options = [];
+  query = query || cts.trueQuery();
+  if(collections) {
+    collections = [].concat(collections);
+    query = cts.collectionQuery(collections);
+  }
+  if(formats) {
+    formats = [].concat(formats);
+    options = formats.map(function(format) { return 'format-' + format; });
+  }
+  // TODO: Parameterize pagination
+  // TODO: Order by
+  return fn.subsequence(cts.search(query, options), 1, 100);
+}
 
-  var deleteDocs = util.applyAs(deleteByCollectionOrFormat, {database: db, transactionMode: 'update-auto-commit'});
+var db = xdmp.getRequestField('db', String(xdmp.database()));
+var collections = xdmp.getRequestField('coll', undefined);
+var formats = xdmp.getRequestField('format', undefined);
 
-  xdmp.addResponseHeader('Content-Type', 'application/json;charset=utf-8');
-  deleteDocs(collection, format);
-} else {
-  xdmp.setResponseCode(405, 'Method not supported');
+switch (xdmp.getRequestMethod()) {
+  case 'GET':
+    var getDocs = util.applyAs(getDocuments, {database: db});
+    xdmp.addResponseHeader('Content-Type', 'application/json;charset=utf-8');
+    xdmp.addResponseHeader('X-Request-Timestamp', String(xdmp.requestTimestamp()));
+    Array.from(getDocs(collections, formats));
+    break;
+  case 'DELETE':
+    var deleteDocs = util.applyAs(
+      deleteByCollectionOrFormat,
+      {database: db, transactionMode: 'update-auto-commit'}
+    );
+    xdmp.addResponseHeader('Content-Type', 'application/json;charset=utf-8');
+    xdmp.addResponseHeader('X-Request-Timestamp', String(xdmp.requestTimestamp()));
+    deleteDocs(collections, formats);
+    break;
+  default:
+    xdmp.setResponseCode(405, 'Method not supported');
 }
