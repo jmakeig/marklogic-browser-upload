@@ -46,6 +46,7 @@ export function button  (t, c, a, l) {return _el('button', c, a, t, l);}
 export function span    (t, c, a, l) {return _el('span',   c, a, t, l);}
 export function p       (t, c, a, l) {return _el('p',      c, a, t, l);}
 export function checkbox(t, c, a, l) {return _el('input',  c, Object.assign(a || {}, {type: 'checkbox'}), t, l);}
+export function radio   (t, c, a, l) {return _el('input',  c, Object.assign(a || {}, {type: 'radio'}), t, l);}
 
 export function clear(el) {
   if(el.hasChildNodes) {
