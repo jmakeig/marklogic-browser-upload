@@ -5,6 +5,8 @@ const DEFAULT_LOCALE = 'en-US';
 function firstKey(obj) { if(!obj) return; for(let k in obj) return k; }
 function firstValue(obj) { if(!obj) return; for(let k in obj) return obj[k]; }
 
+// TODO: Should `locale` be a function rather than a string, so the
+// caller could specify her own formatter?
 function _el(localname, classList, attrs, contents, locale) {
   if('select' === localname) {
     /* contents = [{ <value>: <label> }] */
