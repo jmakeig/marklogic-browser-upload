@@ -107,7 +107,7 @@ export function bindRenderUploadSettings(bindings) {
       }
     }
 
-    function buildRolesSelect(name, value) {
+    function buildRolesSelect(name, selectedValue) {
       return select(
         options.permissions.cachedRoles ?
           makeKeyValue( // UGLY: Turns {key: value} into {value: value}
@@ -116,7 +116,10 @@ export function bindRenderUploadSettings(bindings) {
                 .reduce((p, c) => Object.assign(p, c), {})
           ) : undefined,
         null,
-        Object.assign({}, name ? {name: name} : {}, value ? {value: value} : {})
+        Object.assign({},
+          name ? {name: name} : {},
+          selectedValue ? {value: selectedValue} : {}
+        )
       );
     }
 
