@@ -136,7 +136,10 @@ export function bindRenderUploadSettings(bindings) {
             checkbox(
               options.permissions.user[role].indexOf(cap) > -1,
               undefined,
-              {name: 'permission*' + role, value: cap}
+              {
+                name: 'permission*' + role, value: cap,
+                title: cap // TODO: l12n and capitalization
+              }
             )
             , 'check'
           )
