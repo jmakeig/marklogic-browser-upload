@@ -48,9 +48,14 @@
           <li><label title="Use the root-level id or _id property (JSON) or element (XML) as the database URI."><input type="radio" name="uris" value="id"/><code>_id</code> or <code>id</code></label></li>
           <li><label title="Generate a cryptographically unique identifier for each document."><input type="radio" name="uris" value="uuid"/>UUID</label></li>
         </ul>
-        <h3>Collections</h3>
         <div>
           <table class="collections">
+            <thead>
+              <tr>
+                <th colspan="2"><h3>Collections</h3></th>
+                <th class="action"></th>
+              </tr>
+            </thead>
             <tbody>
               <!-- <tr><td>staging</td><td class="check"><input type="checkbox" name="collections" value="staging" checked="checked"/></td></tr>
               <tr><td>production</td><td class="check"><input type="checkbox" name="collections" value="production" checked="checked"/></td></tr> -->
@@ -65,15 +70,14 @@
         </div>
         <div>
           <table class="permissions">
-            <colgroup span="1"/>
-            <colgroup span="4"/>
             <thead>
               <tr>
                 <th><h3>Permissions</h3></th>
                 <th title="Read">R</th>
                 <th title="Update">U</th>
                 <th title="Insert">I</th>
-                <th title="Execute">E</th><th></th>
+                <th title="Execute">E</th>
+                <th class="action"></th>
               </tr>
             </thead>
             <tbody>

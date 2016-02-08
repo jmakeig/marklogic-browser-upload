@@ -32,6 +32,11 @@ td.button {
 
   text-align: right;
 }
+td.action {
+  width: 1em;
+
+  text-align: center;
+}
 td.number {
   text-align: right;
 }

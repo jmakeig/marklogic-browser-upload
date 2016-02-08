@@ -12,6 +12,7 @@ import {
 	changePermission,
 	addPermission,
 	changePermissionDefaults,
+	addCollection,
 	changeCollectionEnabled,
 	changeCollectionDefaults,
 	changeCollectionBatch,
@@ -84,6 +85,9 @@ function clickHandler(evt) {
 					break;
 				case 'format-clear':
 					store.dispatch(clearFormat(target.value));
+					break;
+				case 'collection-add':
+					store.dispatch(addCollection());
 					break;
 				case 'permission-add':
 					store.dispatch(addPermission());

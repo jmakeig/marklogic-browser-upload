@@ -12,6 +12,7 @@ import {
 	COLLECTION_CLEAR_RECEIPT,
 	COLLECTION_CLEAR_ERROR,
 	URI_POLICY_CHANGE,
+	COLLECTION_ADD,
 	COLLECTION_ENABLED_CHANGE,
 	COLLECTION_DEFAULTS_CHANGE,
 	COLLECTION_BATCH_CHANGE,
@@ -103,6 +104,11 @@ export function reducer(state = initialState, action) {
 		case URI_POLICY_CHANGE:
 			// console.info('Affecting URI_POLICY_CHANGE from %s to %s', state.getIn(['uploadSettings', 'uri']), action.uriPolicy);
 			return state.updateIn(['uploadSettings', 'uri'], current => action.uriPolicy);
+		case COLLECTION_ADD:
+			return state.updateIn(
+				['uploadSettings', 'collections', 'user'],
+				list => list.push({name: action.name || '', enabled: !!(action.enabled)})
+			);
 		case COLLECTION_ENABLED_CHANGE:
 			// Find the collection and change its `enabled` property.
 			const path = ['uploadSettings', 'collections', 'user'];

@@ -1,9 +1,6 @@
 'use strict'
 
 export const URI_POLICY_CHANGE = 'URI_POLICY_CHANGE';
-export const COLLECTION_ENABLED_CHANGE = 'COLLECTION_CHANGE_ENABLED';
-export const COLLECTION_DEFAULTS_CHANGE = 'COLLECTION_ENABLED_CHANGE';
-export const COLLECTION_BATCH_CHANGE = 'COLLECTION_BATCH_CHANGE';
 export const FILES_SPECIFY = 'FILES_SPECIFY';
 export const FILES_UPLOAD_INTENT = 'FILES_UPLOAD_INTENT';
 export const FILES_UPLOAD_RECEIVE = 'FILES_UPLOAD_RECEIVE';
@@ -133,6 +130,19 @@ export function changeURIPolicy(uriPolicy) {
 	return {
 		type: URI_POLICY_CHANGE,
 		uriPolicy: uriPolicy
+	}
+}
+
+export const COLLECTION_ADD = 'COLLECTION_ADD';
+export const COLLECTION_ENABLED_CHANGE = 'COLLECTION_CHANGE_ENABLED';
+export const COLLECTION_DEFAULTS_CHANGE = 'COLLECTION_ENABLED_CHANGE';
+export const COLLECTION_BATCH_CHANGE = 'COLLECTION_BATCH_CHANGE';
+
+export function addCollection(name, enabled = true) {
+	return {
+		type: COLLECTION_ADD,
+		name: name,
+		enabled: enabled
 	}
 }
 

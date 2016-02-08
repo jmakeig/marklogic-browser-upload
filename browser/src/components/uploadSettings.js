@@ -1,5 +1,5 @@
 'use strict'
-import {button, checkbox, div, h1, h2, h3, p, span, td, tr, select} from '../util/dom.js';
+import {button, checkbox, div, h1, h2, h3, p, span, td, tr, input, select} from '../util/dom.js';
 import * as dom from '../util/dom.js';
 
 export function bindRenderUploadSettings(bindings) {
@@ -75,11 +75,15 @@ export function bindRenderUploadSettings(bindings) {
     const collections = dom.clear(bindings.collections.list);
     options.collections.user
       .map(coll => tr([
-        td(coll.name),
+        //td(coll.name),
+        td(
+          input(coll.name, undefined, { name: 'collection*' + coll.name })
+        ),
         td(
           checkbox(coll.enabled, undefined, {name: 'collections', value: coll.name}),
           'check'
-        )
+        ),
+        td('X', ['action'])
       ])
       )
       .forEach(row => collections.appendChild(row));
@@ -144,7 +148,7 @@ export function bindRenderUploadSettings(bindings) {
             , 'check'
           )
         ),
-        td('X')
+        td('X', ['action'])
       ])
       )
       .forEach(row => permissions.appendChild(row));
