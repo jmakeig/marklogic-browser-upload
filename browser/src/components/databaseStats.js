@@ -1,6 +1,7 @@
 'use strict'
 import {a, button, checkbox, div, h1, h2, h3, p, span, td, tr} from '../util/dom.js';
 import * as dom from '../util/dom.js';
+import {prettyHash} from '../util/util.js';
 
 const L10N = {
   clearDatabase: {
@@ -83,7 +84,7 @@ export function bindRenderDatabaseStats(el) {
   		let table = document.createElement('table');
       db.batches.forEach(function(coll){
         let row = document.createElement('tr');
-          row.appendChild(td(coll.name));
+          row.appendChild(td(prettyHash(coll.name), undefined, { title: coll.name }));
           row.appendChild(td(coll.count, ['number']));
   				row.appendChild(td(
   					button('Clear', undefined, {name: 'collection-clear', value: coll.name}),
