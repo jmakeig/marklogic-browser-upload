@@ -107,7 +107,12 @@ export function reducer(state = initialState, action) {
 		case COLLECTION_ADD:
 			return state.updateIn(
 				['uploadSettings', 'collections', 'user'],
-				list => list.push({name: action.name || '', enabled: !!(action.enabled)})
+				list => list.push(
+					{
+						name: action.name || '',
+						enabled: !!(action.enabled)
+					}
+				)
 			);
 		case COLLECTION_ENABLED_CHANGE:
 			// Find the collection and change its `enabled` property.
