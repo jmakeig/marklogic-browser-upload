@@ -118,7 +118,6 @@ export function bindRenderUploadSettings(bindings) {
         opts = options.permissions.cachedRoles
           .sort((a, b) => firstValue(a) > firstValue(b) ? 1 : -1);
       }
-      console.dir(opts);
       return select(
         opts,
         null,
@@ -131,7 +130,6 @@ export function bindRenderUploadSettings(bindings) {
 
     Object.keys(options.permissions.user)
       .map(role => tr([
-        //td(role),
         td(buildRolesSelect(role, role)),
         ...capabilities.map(
           cap => td(
@@ -142,7 +140,8 @@ export function bindRenderUploadSettings(bindings) {
             )
             , 'check'
           )
-        )
+        ),
+        td('X')
       ])
       )
       .forEach(row => permissions.appendChild(row));

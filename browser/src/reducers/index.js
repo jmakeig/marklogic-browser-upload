@@ -15,6 +15,8 @@ import {
 	COLLECTION_ENABLED_CHANGE,
 	COLLECTION_DEFAULTS_CHANGE,
 	COLLECTION_BATCH_CHANGE,
+	PERMISSION_ADD,
+	PERMISSION_REMOVE,
 	PERMISSION_CHANGE,
 	PERMISSION_DEFAULTS_CHANGE,
 	FILES_SPECIFY,
@@ -118,6 +120,12 @@ export function reducer(state = initialState, action) {
 			return state.setIn(['uploadSettings', 'collections', 'default'], action.enabled);
 		case COLLECTION_BATCH_CHANGE:
 			return state.setIn(['uploadSettings', 'collections', 'batch'],action.enabled);
+		case PERMISSION_ADD:
+			return state.updateIn(
+				['uploadSettings', 'permissions', 'user'],
+				map => map.merge({'admin': ['read', 'write', 'update']})
+			);
+			break;
 		case PERMISSION_CHANGE:
 			return state.setIn(['uploadSettings', 'permissions', 'user', action.role], action.capabilities);
 		case PERMISSION_DEFAULTS_CHANGE:

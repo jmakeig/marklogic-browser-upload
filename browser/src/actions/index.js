@@ -1,8 +1,6 @@
 'use strict'
 
 export const URI_POLICY_CHANGE = 'URI_POLICY_CHANGE';
-export const PERMISSION_CHANGE = 'PERMISSION_CHANGE';
-export const PERMISSION_DEFAULTS_CHANGE = 'PERMISSION_DEFAULTS_CHANGE';
 export const COLLECTION_ENABLED_CHANGE = 'COLLECTION_CHANGE_ENABLED';
 export const COLLECTION_DEFAULTS_CHANGE = 'COLLECTION_ENABLED_CHANGE';
 export const COLLECTION_BATCH_CHANGE = 'COLLECTION_BATCH_CHANGE';
@@ -157,6 +155,27 @@ export function changeCollectionBatch(enabled) {
 	return {
 		type: COLLECTION_BATCH_CHANGE,
 		enabled: enabled
+	}
+}
+
+export const PERMISSION_ADD = 'PERMISSION_ADD';
+export const PERMISSION_REMOVE = 'PERMISSION_ADD';
+export const PERMISSION_CHANGE = 'PERMISSION_CHANGE';
+export const PERMISSION_DEFAULTS_CHANGE = 'PERMISSION_DEFAULTS_CHANGE';
+
+
+export function addPermission(role, capabilities) {
+	return {
+		type: PERMISSION_ADD,
+		role: role,
+		capabilities: capabilities
+	}
+}
+
+export function removePermission(role) {
+	return {
+		type: PERMISSION_REMOVE,
+		role: role
 	}
 }
 

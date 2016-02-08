@@ -10,6 +10,7 @@ import {
 	clearCollection,
 	changeURIPolicy,
 	changePermission,
+	addPermission,
 	changePermissionDefaults,
 	changeCollectionEnabled,
 	changeCollectionDefaults,
@@ -29,8 +30,8 @@ const PERMISSION_NAMESPACE = 'permission*';
 // 	return str.replace(/(\*:)/g, (match, $1, offset, original) => '\\$1');
 // }
 function changeHandler(evt){
+	console.info('%s ➞ %s', evt.type, evt.target.name);
 	let target = evt.target;
-	console.info('Changed %s', target.name);
 	switch (target.name) {
 		case 'uris':
 			store.dispatch(changeURIPolicy(target.value));
@@ -70,7 +71,7 @@ function submitHandler(evt) {
 document.querySelector('form').addEventListener('submit', submitHandler, true);
 
 function clickHandler(evt) {
-	console.info('Clicked %s', evt.target.name);
+	console.info('%s ➞ %s', evt.type, evt.target.name);
 	const target = evt.target;
 	switch(target.nodeName.toLowerCase()) {
 		case 'button':
@@ -85,7 +86,7 @@ function clickHandler(evt) {
 					store.dispatch(clearFormat(target.value));
 					break;
 				case 'permission-add':
-					store.dispatch(getRoles());
+					store.dispatch(addPermission());
 					break;
 				default:
 
