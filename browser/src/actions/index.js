@@ -177,7 +177,7 @@ export function removeCollection(name) {
 }
 
 export const PERMISSION_ADD = 'PERMISSION_ADD';
-export const PERMISSION_REMOVE = 'PERMISSION_ADD';
+export const PERMISSION_REMOVE = 'PERMISSION_REMOVE';
 export const PERMISSION_CHANGE = 'PERMISSION_CHANGE';
 export const PERMISSION_DEFAULTS_CHANGE = 'PERMISSION_DEFAULTS_CHANGE';
 
