@@ -75,6 +75,7 @@ const initialState = Immutable.fromJS({
 );
 
 const PATH_COLLECTIONS = ['uploadSettings', 'collections', 'user'];
+const PATH_PERMISSIONS = ['uploadSettings', 'permissions', 'user'];
 // TODO: Split this out into composable reducers
 export function reducer(state = initialState, action) {
 	console.info('%s: %s', action.type, Object.keys(action).filter(k => 'type' !== k).join(', '));
@@ -138,10 +139,14 @@ export function reducer(state = initialState, action) {
 			);
 		case PERMISSION_ADD:
 			return state.updateIn(
-				['uploadSettings', 'permissions', 'user'],
+				PATH_PERMISSIONS,
 				map => map.merge({'admin': ['read', 'write', 'update']})
 			);
-			break;
+		case PERMISSION_REMOVE:
+			return state.setIn(
+				PATH_PERMISSIONS,
+				state.getIn(PATH_PERMISSIONS).delete(action.role)
+			);
 		case PERMISSION_CHANGE:
 			return state.setIn(['uploadSettings', 'permissions', 'user', action.role], action.capabilities);
 		case PERMISSION_DEFAULTS_CHANGE:
