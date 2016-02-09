@@ -6,3 +6,10 @@ export function prettyHash(hash) {
   }
   return hash;
 }
+
+export function firstValue(obj) {
+  if(!obj) return;
+  for(let k in obj) {
+    return obj[k];
+  }
+}
