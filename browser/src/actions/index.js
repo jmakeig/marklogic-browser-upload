@@ -137,6 +137,7 @@ export const COLLECTION_ADD = 'COLLECTION_ADD';
 export const COLLECTION_ENABLED_CHANGE = 'COLLECTION_CHANGE_ENABLED';
 export const COLLECTION_DEFAULTS_CHANGE = 'COLLECTION_ENABLED_CHANGE';
 export const COLLECTION_BATCH_CHANGE = 'COLLECTION_BATCH_CHANGE';
+export const COLLECTION_REMOVE = 'COLLECTION_REMOVE';
 
 export function addCollection(name, enabled = true) {
 	return {
@@ -165,6 +166,13 @@ export function changeCollectionBatch(enabled) {
 	return {
 		type: COLLECTION_BATCH_CHANGE,
 		enabled: enabled
+	}
+}
+
+export function removeCollection(name) {
+	return {
+		type: COLLECTION_REMOVE,
+		name: name
 	}
 }
 

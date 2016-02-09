@@ -16,6 +16,7 @@ import {
 	COLLECTION_ENABLED_CHANGE,
 	COLLECTION_DEFAULTS_CHANGE,
 	COLLECTION_BATCH_CHANGE,
+	COLLECTION_REMOVE,
 	PERMISSION_ADD,
 	PERMISSION_REMOVE,
 	PERMISSION_CHANGE,
@@ -73,12 +74,12 @@ const initialState = Immutable.fromJS({
 }
 );
 
+const PATH_COLLECTIONS = ['uploadSettings', 'collections', 'user'];
 // TODO: Split this out into composable reducers
 export function reducer(state = initialState, action) {
 	console.info('%s: %s', action.type, Object.keys(action).filter(k => 'type' !== k).join(', '));
 	// let newState = Object.assign({}, state);
 	switch (action.type) {
-
 		case DATABASESTATS_REFRESH_INTENT:
 			return state.setIn(['workInProgress', DATABASESTATS_REFRESH_INTENT], true);
 		case DATABASESTATS_REFRESH_RECEIPT:
@@ -106,7 +107,7 @@ export function reducer(state = initialState, action) {
 			return state.updateIn(['uploadSettings', 'uri'], current => action.uriPolicy);
 		case COLLECTION_ADD:
 			return state.updateIn(
-				['uploadSettings', 'collections', 'user'],
+				PATH_COLLECTIONS,
 				list => list.push(
 					{
 						name: action.name || '',
@@ -116,7 +117,6 @@ export function reducer(state = initialState, action) {
 			);
 		case COLLECTION_ENABLED_CHANGE:
 			// Find the collection and change its `enabled` property.
-			const path = ['uploadSettings', 'collections', 'user'];
 			const list = state.getIn(path)
 				.map(
 					coll => {
@@ -131,6 +131,11 @@ export function reducer(state = initialState, action) {
 			return state.setIn(['uploadSettings', 'collections', 'default'], action.enabled);
 		case COLLECTION_BATCH_CHANGE:
 			return state.setIn(['uploadSettings', 'collections', 'batch'],action.enabled);
+		case COLLECTION_REMOVE:
+			return state.setIn(
+				PATH_COLLECTIONS,
+				state.getIn(PATH_COLLECTIONS).filter(coll => action.name !== coll.get('name'))
+			);
 		case PERMISSION_ADD:
 			return state.updateIn(
 				['uploadSettings', 'permissions', 'user'],

@@ -12,10 +12,12 @@ import {
 	changePermission,
 	addPermission,
 	changePermissionDefaults,
+	removePermission,
 	addCollection,
 	changeCollectionEnabled,
 	changeCollectionDefaults,
 	changeCollectionBatch,
+	removeCollection,
 	specifiedFiles,
 	uploadFiles,
 	getRoles
@@ -23,7 +25,6 @@ import {
 import {reducer} from './reducers';
 import {bindRenderDatabaseStats} from './components/databaseStats';
 import {bindRenderUploadSettings} from './components/uploadSettings';
-
 
 const PERMISSION_NAMESPACE = 'permission*';
 
@@ -89,8 +90,14 @@ function clickHandler(evt) {
 				case 'collection-add':
 					store.dispatch(addCollection());
 					break;
+				case 'collection-remove':
+					store.dispatch(removeCollection(target.value));
+					break;
 				case 'permission-add':
 					store.dispatch(addPermission());
+					break;
+				case 'permission-remove':
+					store.dispatch(removePermission(target.value));
 					break;
 				default:
 

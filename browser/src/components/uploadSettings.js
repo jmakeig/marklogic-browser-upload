@@ -83,7 +83,12 @@ export function bindRenderUploadSettings(bindings) {
           checkbox(coll.enabled, undefined, {name: 'collections', value: coll.name}),
           'check'
         ),
-        td('X', ['action'])
+        td(
+          button('×', 'remove',
+            {name: 'collection-remove', value: coll.name, title: `Remove collection, ${coll.name}, from the upload settings` }
+          ),
+          ['action']
+        )
       ])
       )
       .forEach(row => collections.appendChild(row));
@@ -148,7 +153,12 @@ export function bindRenderUploadSettings(bindings) {
             , 'check'
           )
         ),
-        td('X', ['action'])
+        td(
+          button('×', 'remove',
+            {name: 'permission-remove', value: role, title: `Remove permissions for ${role}`}
+          ),
+          ['action']
+        )
       ])
       )
       .forEach(row => permissions.appendChild(row));
