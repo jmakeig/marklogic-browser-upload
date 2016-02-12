@@ -36,7 +36,7 @@ export function bindRenderUploadSettings(bindings) {
       .map(coll => tr([
         //td(coll.name),
         td(
-          input(coll.name, undefined, { name: 'collection*' + coll.name })
+          input(coll.name, undefined, { name: 'collection', 'data-value': coll.name })
         ),
         td(
           checkbox(coll.enabled, undefined, {name: 'collections', value: coll.name}),

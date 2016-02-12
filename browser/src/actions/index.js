@@ -134,6 +134,7 @@ export function changeURIPolicy(uriPolicy) {
 }
 
 export const COLLECTION_ADD = 'COLLECTION_ADD';
+export const COLLECTION_CHANGE = 'COLLECTION_CHANGE';
 export const COLLECTION_ENABLED_CHANGE = 'COLLECTION_CHANGE_ENABLED';
 export const COLLECTION_DEFAULTS_CHANGE = 'COLLECTION_ENABLED_CHANGE';
 export const COLLECTION_BATCH_CHANGE = 'COLLECTION_BATCH_CHANGE';
@@ -144,6 +145,14 @@ export function addCollection(name, enabled = true) {
 		type: COLLECTION_ADD,
 		name: name,
 		enabled: enabled
+	}
+}
+
+export function changeCollection(oldName, newName) {
+	return {
+		type: COLLECTION_CHANGE,
+		oldName: oldName,
+		newName: newName
 	}
 }
 

@@ -14,6 +14,7 @@ import {
 	changePermissionDefaults,
 	removePermission,
 	addCollection,
+	changeCollection,
 	changeCollectionEnabled,
 	changeCollectionDefaults,
 	changeCollectionBatch,
@@ -38,7 +39,10 @@ function changeHandler(evt){
 		case 'uris':
 			store.dispatch(changeURIPolicy(target.value));
 			break;
-		case 'collections':
+		case 'collection':
+			store.dispatch(changeCollection(target.dataset.value, target.value));
+			break;
+		case 'collections': // FIXME: Well, that name's confusing, isn't it?
 			store.dispatch(changeCollectionEnabled(target.value, target.checked));
 			break;
 		case 'collection-defaults':
@@ -108,6 +112,11 @@ function clickHandler(evt) {
 	}
 }
 document.querySelector('form').addEventListener('click', clickHandler, true);
+
+// function inputHandler(evt) {
+// 	console.info('%s ➞ %s', evt.type, evt.target.name);
+// }
+// document.querySelector('form').addEventListener('input', inputHandler, true);
 
 const store = applyMiddleware(thunk)
 	(createStore) // middleware store creator

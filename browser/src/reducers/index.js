@@ -13,6 +13,7 @@ import {
 	COLLECTION_CLEAR_ERROR,
 	URI_POLICY_CHANGE,
 	COLLECTION_ADD,
+	COLLECTION_CHANGE,
 	COLLECTION_ENABLED_CHANGE,
 	COLLECTION_DEFAULTS_CHANGE,
 	COLLECTION_BATCH_CHANGE,
@@ -110,18 +111,29 @@ export function reducer(state = initialState, action) {
 			return state.updateIn(
 				PATH_COLLECTIONS,
 				list => list.push(
-					{
+					Immutable.Map({
 						name: action.name || '',
 						enabled: !!(action.enabled)
-					}
+					})
 				)
+			);
+		case COLLECTION_CHANGE:
+			return state.setIn(PATH_COLLECTIONS,
+				state.getIn(PATH_COLLECTIONS)
+					.map(coll => {
+						console.dir(coll);
+						if(action.oldName === coll.get('name')) {
+							return coll.set('name', action.newName);
+						}
+						return coll;
+					})
 			);
 		case COLLECTION_ENABLED_CHANGE:
 			// Find the collection and change its `enabled` property.
-			const list = state.getIn(path)
+			const list = state.getIn(PATH_COLLECTIONS)
 				.map(
 					coll => {
-						if(coll.get('name') === action.collection) {
+						if(action.collection === coll.get('name')) {
 							return coll.merge({enabled: action.enabled});
 						}
 						return coll;
