@@ -56,7 +56,7 @@ function _el(localname, classList, attrs, contents, locale) {
     elem.textContent = contents.toLocaleString(locale || DEFAULT_LOCALE); // FIXME: Get locale from model/store
   }
 
-  
+
   if(classList) {
     if('string' === typeof classList) { classList = [classList]; }
     classList.forEach(function(cls){
@@ -86,6 +86,11 @@ export function input   (t, c, a, l) {return _el('input',  c, Object.assign(a ||
 export function checkbox(t, c, a, l) {return _el('input',  c, Object.assign(a || {}, {type: 'checkbox'}), t, l);}
 export function radio   (t, c, a, l) {return _el('input',  c, Object.assign(a || {}, {type: 'radio'}),    t, l);}
 
+/**
+ * Remove all child nodes of the input element.
+ * @param  {HTMLElement} el The element to clear
+ * @return {HTMLElement} Returns `el` for chaining
+ */
 export function clear(el) {
   if(el.hasChildNodes) {
     while(el.hasChildNodes()) { el.removeChild(el.lastChild); }
