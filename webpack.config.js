@@ -1,6 +1,7 @@
 var webpack = require('webpack');
 var path = require('path');
 var glob = require('glob');
+var TapWebpackPlugin = require('tap-webpack-plugin');
 
 const PATHS = {
   app: path.join(__dirname, 'browser'),
@@ -29,26 +30,14 @@ module.exports = [
   module: {
     loaders: [
       {
-        test: /\.html$/,
-        loader: 'file?name=[name].[ext]'
-      },
-      {
         test: /\.js$/,
         exclude: /node_modules/,
         loaders: [
           'babel-loader'
         ]
-      },
-      {
-        test: /\.css$/,
-        loaders: ['style-loader', 'css-loader'],
-        include: PATHS.app
       }
     ],
-  } //,
-  // plugins: [
-  //   new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"vendor.bundle.js")
-  // ]
+  }
 },
 {
   //target: 'node',
@@ -76,9 +65,9 @@ module.exports = [
     net: '{}',
     console: '{}'
   }
-  // ,
-  // plugins: [
-  //   new TapWebpackPlugin()
-  // ]
+  ,
+  plugins: [
+    new TapWebpackPlugin()
+  ]
 }
 ]
