@@ -9,22 +9,6 @@ export const FILES_UPLOAD_ERROR = 'FILES_UPLOAD_ERROR';
 
 /* Refresh databaseStats *****************************************************/
 
-/*
-
-0. Paste below into where your actions live
-
-1. Import action constants into the reducer and add to the switch statement
-
-  import {
-    DATABASESTATS_REFRESH_INTENT,
-    DATABASESTATS_REFRESH_RECEIPT,
-    DATABASESTATS_REFRESH_ERROR,
-  } from '../actions'
-
-2. Import refreshDatabaseStats into the UI component
-
- */
-
 export const DATABASESTATS_REFRESH_INTENT  = 'DATABASESTATS_REFRESH_INTENT';
 export const DATABASESTATS_REFRESH_RECEIPT = 'DATABASESTATS_REFRESH_RECEIPT';
 export const DATABASESTATS_REFRESH_ERROR   = 'DATABASESTATS_REFRESH_ERROR';
@@ -491,22 +475,6 @@ function errorGetRoles(error) {
 
 /* Clear database *****************************************************/
 
-/*
-
-0. Paste below into where your actions live
-
-1. Import action constants into the reducer and add to the switch statement
-
-  import {
-    DATABASE_CLEAR_INTENT,
-    DATABASE_CLEAR_RECEIPT,
-    DATABASE_CLEAR_ERROR,
-  } from '../actions'
-
-2. Import clearDatabase into the UI component
-
- */
-
 export const DATABASE_CLEAR_INTENT  = 'DATABASE_CLEAR_INTENT';
 export const DATABASE_CLEAR_RECEIPT = 'DATABASE_CLEAR_RECEIPT';
 export const DATABASE_CLEAR_ERROR   = 'DATABASE_CLEAR_ERROR';
@@ -607,22 +575,6 @@ function errorClearDatabase(error) {
 
 
 /* Clear format *****************************************************/
-
-/*
-
-0. Paste below into where your actions live
-
-1. Import action constants into the reducer and add to the switch statement
-
-  import {
-    FORMAT_CLEAR_INTENT,
-    FORMAT_CLEAR_RECEIPT,
-    FORMAT_CLEAR_ERROR,
-  } from '../actions'
-
-2. Import clearFormat into the UI component
-
- */
 
 export const FORMAT_CLEAR_INTENT  = 'FORMAT_CLEAR_INTENT';
 export const FORMAT_CLEAR_RECEIPT = 'FORMAT_CLEAR_RECEIPT';
