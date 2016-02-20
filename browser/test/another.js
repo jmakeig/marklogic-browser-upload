@@ -1,6 +1,6 @@
 'use strict'
 
-import test from 'tape';
+import test from 'tape-catch';
 import {Map} from 'immutable';
 
 test('Here is another test', (assert) => {
