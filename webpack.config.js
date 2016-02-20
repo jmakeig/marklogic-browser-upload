@@ -17,11 +17,11 @@ module.exports = [
   entry: {
     //html: './index.html',
     js: './src/index.js' //,
-    // vendor: [ // List vendor libraries that will show up in vendor.bundle.js
-    //   "number-to-locale-string",
-    //   "redux",
-    //   "redux-thunk"
-    // ]
+    ,vendor: [ // List vendor libraries that will show up in vendor.bundle.js
+      "immutable",
+      "redux",
+      "redux-thunk"
+    ]
   },
   output: {
     path: PATHS.build,
@@ -37,7 +37,10 @@ module.exports = [
         ]
       }
     ],
-  }
+  },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"vendor.bundle.js")
+  ]
 },
 {
   //target: 'node',
