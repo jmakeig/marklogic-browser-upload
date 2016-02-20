@@ -21,19 +21,15 @@
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",
     "babel-tape-runner": "^2.0.0",
-    "css-loader": "^0.23.1",
-    "csscomb": "^3.1.8",
     "eslint": "^1.10.3",
-    "file-loader": "^0.8.4",
     "glob": "^7.0.0",
+    "redux-mock-store": "^0.0.6",
     "tap-diff": "^0.1.1",
     "tap-notify": "^0.0.3",
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0",
     "tape-run": "^2.1.3",
-    "webpack": "^1.12.10",
-    "webpack-dev-server": "^1.12.0",
-    "webpack-hot-middleware": "^2.2.0"
+    "webpack": "^1.12.10"
   },
   "dependencies": {
     "babel-runtime": "^6.3.19",
