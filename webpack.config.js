@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
+var glob = require('glob');
 
 const PATHS = {
   app: path.join(__dirname, 'browser'),
@@ -8,7 +9,8 @@ const PATHS = {
 
 console.log(PATHS.app);
 
-module.exports = {
+module.exports = [
+{
   devtool: 'source-map',
   context: PATHS.app,
   entry: {
@@ -47,4 +49,36 @@ module.exports = {
   // plugins: [
   //   new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"vendor.bundle.js")
   // ]
+},
+{
+  //target: 'node',
+
+  entry: glob.sync('./browser/test/**/*.js'),
+
+  output: {
+    path: 'browser',
+    filename: 'tests.js'
+  },
+  module: {
+    loaders: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loaders: [
+          'babel-loader'
+        ]
+      }
+    ]
+  },
+  externals: {
+    fs: '{}',
+    tls: '{}',
+    net: '{}',
+    console: '{}'
+  }
+  // ,
+  // plugins: [
+  //   new TapWebpackPlugin()
+  // ]
 }
+]
