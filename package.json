@@ -11,7 +11,7 @@
     "test": "npm run-script build; cat browser/tests.js | ./node_modules/.bin/tape-run | ./node_modules/.bin/tap-notify | ./node_modules/.bin/tap-diff",
     "build": "npm run-script clean; ./node_modules/.bin/webpack --progress --colors",
     "clean": "rm browser/bundle.js browser/bundle.js.map browser/vendor.bundle.js browser/vendor.bundle.js.map browser/tests.js 2>/dev/null; exit 0;",
-    "watch": "echo 'Watches source files, including tests, and runs tests in Node.';./node_modules/.bin/webpack --watch"
+    "watch": "echo 'Watches source files, including tests.';./node_modules/.bin/webpack --watch"
   },
   "license": "Apache-2.0",
   "devDependencies": {
